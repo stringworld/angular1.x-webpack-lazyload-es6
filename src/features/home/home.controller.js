@@ -9,7 +9,7 @@ export default class HomeController {
   }
 
   randomName() {
-    this.name = this.random.getName();
+    this.name =  this.random.getName()
   }
 }
 

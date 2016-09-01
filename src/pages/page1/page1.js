@@ -1,12 +1,11 @@
 import uirouter from 'angular-ui-router';
 import routing from './page1.route';
+import voicePlayer from '../../component/voicePlayer/voicePlayer';
 
-export default angular.module('app.page1', [uirouter])
+
+export default angular.module('app.page1', [uirouter,voicePlayer])
     .config(routing)
     .controller('test1', function () {
-
-
-
         //obejct.asign demon
         const obj = [{ a: 1 }, { a: 1 }]
         let copy = Object.assign([], obj);
@@ -40,7 +39,22 @@ export default angular.module('app.page1', [uirouter])
 
 
     })
-    .controller('test2', ['$scope', function ($scope) {
+    .controller('test2', ['$scope',function ($scope) {
+        
+        $scope.voicedata=[
+                {
+                    "url": "http://192.168.0.215:8082/stream/6448300e-8249-49af-b948-1ecedeaeaa27.mp3",
+                    "time":21
+                },
+                {
+                    "url": "http://192.168.0.215:8082/stream/6448300e-8249-49af-b948-1ecedeaeaa27.mp3",
+                    "time":21
+                },
+                {
+                    "url": "http://192.168.0.215:8082/stream/6448300e-8249-49af-b948-1ecedeaeaa27.mp3",
+                     "time":21
+                },
+            ]
 
     }])
     .name;

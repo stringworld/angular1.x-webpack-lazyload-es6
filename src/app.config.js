@@ -1,9 +1,9 @@
 
 
 
-routing.$inject = ['$stateProvider', '$urlRouterProvider', '$ocLazyLoadProvider', '$sceDelegateProvider'];
+routing.$inject = ['$stateProvider', '$urlRouterProvider', '$sceDelegateProvider'];
 
-export default function routing($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, $sceDelegateProvider) {
+export default function routing($stateProvider, $urlRouterProvider, $sceDelegateProvider) {
   //$locationProvider.html5Mode(true);
   $sceDelegateProvider.resourceUrlWhitelist([
     'self',
@@ -14,11 +14,5 @@ export default function routing($stateProvider, $urlRouterProvider, $ocLazyLoadP
     'http://192.168.0.215:8082/stream/**'
   ]);
   $urlRouterProvider.otherwise('/');
-  $stateProvider
-    .state('index', {
-      url: '/index',
-      template: require('./pages/page1/page1.html'),
-      //controller: 'page1',
-      //controllerAs: 'home'
-    });
+ 
 }

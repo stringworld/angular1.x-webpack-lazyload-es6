@@ -35,7 +35,6 @@ export default function initial($rootScope, $state, $stateParams) {
     });
     $rootScope.$on('$stateChangeSuccess', function (evt, toState, toParams, fromState, fromParams) {
         $rootScope.showloading = false;
-        console.log('hello')
         var ToStringParams = JSON.stringify(toParams)
         if (toState.position == true) {
             setTimeout(function () {

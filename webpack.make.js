@@ -32,6 +32,7 @@ module.exports = function makeWebpackConfig (options) {
     config.entry = {}
   } else {
     config.entry = {
+      common: ['angular','fastclick','jquery','angular-ui-router','./src/app.routerextras.js'],
       app: './src/app.js'
     }
   }
@@ -73,7 +74,8 @@ module.exports = function makeWebpackConfig (options) {
   } else if (BUILD) {
     config.devtool = 'source-map';
   } else {
-    config.devtool = 'eval';
+    //config.devtool = 'eval';
+     config.devtool = 'inline-source-map';
   }
 
   /**
@@ -102,13 +104,13 @@ module.exports = function makeWebpackConfig (options) {
       // Pass along the updated reference to your code
       // You can add here any file extension you want to get copied to your output
       test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$/,
-      loader: 'file'
+      loader: 'url-loader?limit=8192'
     }, {
       // HTML LOADER
       // Reference: https://github.com/webpack/raw-loader
       // Allow loading html through js
       test: /\.html$/,
-      loader: 'raw'
+      loader: 'html-loader?interpolate'
     }]
   };
 
@@ -175,7 +177,8 @@ module.exports = function makeWebpackConfig (options) {
     // Disabled when in test mode or not in build mode
     new ExtractTextPlugin('[name].[hash].css', {
       disable: !BUILD || TEST
-    })
+    }),
+    new webpack.optimize.CommonsChunkPlugin({name:"common",minChunks: Infinity,}),
   ];
 
   // Skip rendering index.html in test mode

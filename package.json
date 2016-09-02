@@ -43,6 +43,7 @@
   },
   "devDependencies": {
     "angular-mocks": "^1.4.1",
+    "html-loader": "^0.4.3",
     "isparta-instrumenter-loader": "^0.2.1",
     "jasmine-core": "^2.3.4",
     "karma": "^0.13.9",
@@ -53,6 +54,7 @@
     "karma-spec-reporter": "0.0.19",
     "karma-webpack": "^1.5.1",
     "null-loader": "^0.1.1",
-    "phantomjs": "^1.9.17"
+    "phantomjs": "^1.9.17",
+    "url-loader": "^0.5.7"
   }
 }

@@ -13,6 +13,6 @@ export default function routing($stateProvider, $urlRouterProvider, $sceDelegate
     'http://45.124.125.100/**',
     'http://192.168.0.215:8082/stream/**'
   ]);
-  $urlRouterProvider.otherwise('/');
+  $urlRouterProvider.otherwise('/page1');
  
 }

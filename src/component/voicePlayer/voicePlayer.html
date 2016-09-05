@@ -46,7 +46,7 @@
         <ul class="list">
             <li class="voice">
                 <p class="voice-list" ng-class="{true: 'on', false: ''}[item.play]" ng-repeat="item in voicelist track by $index" ng-click="voice_play($index)" ng-init="addEvent($last)">
-                    <img ng-hide="item.play" src="${require('./img/voice.png')}">
+                    <img ng-hide="item.play" src="./img/voice.png">
                     <img ng-show="item.play" src="./img/voice-play.gif">
                    <span>{{item.time}}</span>
                     <audio preload="load" ng-show="0" ng-src="{{item.url}}"></audio>

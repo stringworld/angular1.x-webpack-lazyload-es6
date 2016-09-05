@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A workflow for Angular made with Webpack",
   "scripts": {
-    "build": "gulp" ,
+    "build": "gulp",
     "build:test": "webpack --config webpack.build.js --bail -p",
     "dev": "webpack-dev-server --history-api-fallback --hot --inline --progress",
     "test": "karma start",
@@ -45,6 +45,8 @@
   },
   "devDependencies": {
     "angular-mocks": "^1.4.1",
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
     "gulp-rename": "^1.2.2",
     "gulp-replace": "^0.5.4",
     "html-loader": "^0.4.3",

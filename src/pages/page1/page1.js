@@ -5,7 +5,22 @@ import voicePlayer from '../../component/voicePlayer/voicePlayer';
 
 export default angular.module('app.page1', [uirouter,voicePlayer])
     .config(routing)
-    .controller('test1', function () {
+    .service('API', ['$http', '$q', '$rootScope', function ($http, $q, $rootScope) {
+        return {
+            get_data: function () {
+                var config = { params: {  } };
+                return $http.get('../../src/mockup/mockup1.json', config)
+            }
+        }
+    }])
+    .controller('test1', ['API',function (API) {
+        API.get_data().then((response)=>{
+
+        console.log(response)
+
+        })
+
+
         //obejct.asign demon
         const obj = [{ a: 1 }, { a: 1 }]
         let copy = Object.assign([], obj);
@@ -38,7 +53,7 @@ export default angular.module('app.page1', [uirouter,voicePlayer])
         console.log(copy3)
 
 
-    })
+    }])
     .controller('test2', ['$scope',function ($scope) {
         
         $scope.voicedata=[

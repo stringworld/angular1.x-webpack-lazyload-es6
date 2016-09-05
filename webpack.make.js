@@ -6,7 +6,8 @@ var autoprefixer = require('autoprefixer-core');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-module.exports = function makeWebpackConfig (options) {
+module.exports = function makeWebpackConfig(options) {
+  console.log(options)
   /**
    * Environment type
    * BUILD is for generating minified builds
@@ -14,7 +15,6 @@ module.exports = function makeWebpackConfig (options) {
    */
   var BUILD = !!options.BUILD;
   var TEST = !!options.TEST;
-
   /**
    * Config
    * Reference: http://webpack.github.io/docs/configuration.html
@@ -32,7 +32,7 @@ module.exports = function makeWebpackConfig (options) {
     config.entry = {}
   } else {
     config.entry = {
-      common: ['angular','fastclick','jquery','angular-ui-router','./src/app.routerextras.js'],
+      common: ['angular', 'fastclick', 'jquery', 'angular-ui-router', './src/app.routerextras.js'],
       app: './src/app.js'
     }
   }
@@ -52,11 +52,11 @@ module.exports = function makeWebpackConfig (options) {
 
       // Output path from the view of the page
       // Uses webpack-dev-server in development
-      publicPath: BUILD ? '/' : 'http://localhost:8080/',
+      publicPath: BUILD ? 'http://cdn.example.com/' : 'http://localhost:8080/',
 
       // Filename for entry points
       // Only adds hash in build mode
-      filename: BUILD ? '[name].[hash].js' : '[name].bundle.js',
+      filename: BUILD ? '[name].js' : '[name].bundle.js',
 
       // Filename for non-entry points
       // Only adds hash in build mode
@@ -75,7 +75,7 @@ module.exports = function makeWebpackConfig (options) {
     config.devtool = 'source-map';
   } else {
     //config.devtool = 'eval';
-     config.devtool = 'inline-source-map';
+    config.devtool = 'inline-source-map';
   }
 
   /**
@@ -97,21 +97,21 @@ module.exports = function makeWebpackConfig (options) {
       loader: 'babel?optional=runtime',
       exclude: /node_modules/
     }, {
-      // ASSET LOADER
-      // Reference: https://github.com/webpack/file-loader
-      // Copy png, jpg, jpeg, gif, svg, woff, woff2, ttf, eot files to output
-      // Rename the file using the asset hash
-      // Pass along the updated reference to your code
-      // You can add here any file extension you want to get copied to your output
-      test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$/,
-      loader: 'url-loader?limit=8192'
-    }, {
-      // HTML LOADER
-      // Reference: https://github.com/webpack/raw-loader
-      // Allow loading html through js
-      test: /\.html$/,
-      loader: 'html-loader?interpolate'
-    }]
+        // ASSET LOADER
+        // Reference: https://github.com/webpack/file-loader
+        // Copy png, jpg, jpeg, gif, svg, woff, woff2, ttf, eot files to output
+        // Rename the file using the asset hash
+        // Pass along the updated reference to your code
+        // You can add here any file extension you want to get copied to your output
+        test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$/,
+        loader: 'url-loader?limit=8192'
+      }, {
+        // HTML LOADER
+        // Reference: https://github.com/webpack/raw-loader
+        // Allow loading html through js
+        test: /\.html$/,
+        loader: `html-loader?root=.`
+      }]
   };
 
   // ISPARTA LOADER
@@ -175,10 +175,10 @@ module.exports = function makeWebpackConfig (options) {
     // Reference: https://github.com/webpack/extract-text-webpack-plugin
     // Extract css files
     // Disabled when in test mode or not in build mode
-    new ExtractTextPlugin('[name].[hash].css', {
+    new ExtractTextPlugin('[name].css', {
       disable: !BUILD || TEST
     }),
-    new webpack.optimize.CommonsChunkPlugin({name:"common",minChunks: Infinity,}),
+    new webpack.optimize.CommonsChunkPlugin({ name: "common", minChunks: Infinity, }),
   ];
 
   // Skip rendering index.html in test mode
@@ -222,7 +222,8 @@ module.exports = function makeWebpackConfig (options) {
       modules: false,
       cached: false,
       colors: true,
-      chunk: false
+      chunk: false,
+      hot: true
     }
   };
 

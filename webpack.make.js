@@ -15,6 +15,7 @@ module.exports = function makeWebpackConfig(options) {
    */
   var BUILD = !!options.BUILD;
   var TEST = !!options.TEST;
+  var CDN = options.CDN
   /**
    * Config
    * Reference: http://webpack.github.io/docs/configuration.html
@@ -52,7 +53,7 @@ module.exports = function makeWebpackConfig(options) {
 
       // Output path from the view of the page
       // Uses webpack-dev-server in development
-      publicPath: BUILD ? 'http://cdn.example.com/' : 'http://localhost:8080/',
+      publicPath: BUILD ? CDN : 'http://localhost:8080/',
 
       // Filename for entry points
       // Only adds hash in build mode

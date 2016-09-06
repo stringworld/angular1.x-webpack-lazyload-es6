@@ -5,16 +5,14 @@
 //   BUILD: true,
 //   TEST: false
 // });
-
-
 var webpack_make = require('./webpack.make');
-
-module.exports = config_build;
-var config_build = function () {
-  webpack_make({
+var config_build=function(cdn){
+ return webpack_make({
     BUILD: true,
     TEST: false,
-    CDN: "cdn"
-  })
-
+    CDN:cdn
+  });
 }
+module.exports = config_build;
+
+

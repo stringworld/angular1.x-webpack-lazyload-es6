@@ -13,10 +13,9 @@ gulp.task('clean:dist', function (cb) {
 });
 
 gulp.task('outputFile', ['clean:dist'], function () {
-    var stream = gulp.src('./src/app.js')
-        .pipe(webpack(require('./webpack.build.js')))
+    return gulp.src('./src/app.js')
+        .pipe(webpack(require('./webpack.build.js')(cdn)))
         .pipe(gulp.dest('dist/'));
-    return stream;
 });
 
 
@@ -28,9 +27,9 @@ gulp.task('adaptBuilding', ['outputFile'], function () {
     //     .pipe(rename("common.js"))
     //     .pipe(gulp.dest('dist/'));
 
-    // gulp.src('./dist/index.html')
-    //     .pipe(replace(/common(\S*).js/, 'common.js'))
-    //     .pipe(gulp.dest('dist/'));
+    gulp.src('./dist/index.html')
+        .pipe(replace(cdn, ''))
+        .pipe(gulp.dest('dist/'));
 });
 
 gulp.task('default', ['adaptBuilding'], function () {

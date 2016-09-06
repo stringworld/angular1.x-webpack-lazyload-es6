@@ -15,7 +15,7 @@ module.exports = function makeWebpackConfig(options) {
    */
   var BUILD = !!options.BUILD;
   var TEST = !!options.TEST;
-  var CDN = options.CDN
+  var CDN = options.CDN;
   /**
    * Config
    * Reference: http://webpack.github.io/docs/configuration.html
@@ -53,7 +53,7 @@ module.exports = function makeWebpackConfig(options) {
 
       // Output path from the view of the page
       // Uses webpack-dev-server in development
-      publicPath: BUILD ? CDN : 'http://localhost:8080/',
+      publicPath: BUILD ? CDN : '',
 
       // Filename for entry points
       // Only adds hash in build mode
@@ -191,7 +191,9 @@ module.exports = function makeWebpackConfig(options) {
         template: './src/index.html',
         inject: 'body',
         //minify: BUILD
-      })
+      }),
+      new webpack.optimize.OccurrenceOrderPlugin(),
+      new webpack.HotModuleReplacementPlugin()
     )
   }
 
@@ -224,7 +226,8 @@ module.exports = function makeWebpackConfig(options) {
       cached: false,
       colors: true,
       chunk: false,
-      hot: true
+      hot: true,
+      inline: true
     }
   };
 

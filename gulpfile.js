@@ -3,8 +3,11 @@ var rename = require("gulp-rename");
 var webpack = require('webpack-stream');
 var replace = require('gulp-replace');
 var del = require('del');
+var inject = require('gulp-inject-string');
 
-var cdn = 'http://cdn.example.com/';
+
+var cdn = 'http://192.168.3.248:8080/';
+
 
 gulp.task('clean:dist', function (cb) {
     return del([
@@ -20,18 +23,23 @@ gulp.task('outputFile', ['clean:dist'], function () {
 
 
 gulp.task('adaptBuilding', ['outputFile'], function () {
-  
-
-
-    // gulp.src('./dist/common.**.js')
-    //     .pipe(rename("common.js"))
-    //     .pipe(gulp.dest('dist/'));
-
+    var now = new Date;
+    var version = now.getTime();
+    //remove CDN and add version
     gulp.src('./dist/index.html')
         .pipe(replace(cdn, ''))
+        .pipe(inject.after('<head>', '\n<info '
+            + 'version='+'"'+version+'"'+' '
+            + 'updata=['+cdn+'app.js,'+cdn+'app.css]'
+            + ' />')
+        )
         .pipe(gulp.dest('dist/'));
+
+
 });
 
 gulp.task('default', ['adaptBuilding'], function () {
+
+
 
 });

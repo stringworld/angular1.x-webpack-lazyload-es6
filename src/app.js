@@ -14,6 +14,14 @@ import home from './features/home';
 import page1 from './pages/page1/page1';
 import page2 from './pages/page2/page2';
 
-angular.module('app', [uirouter,routerextras,home,page1,page2])
+angular.module('app', [uirouter, routerextras, home, page1, page2])
   .run(initial)
   .config(routing);
+
+if (module.hot) {
+  //module.hot.accept();
+  module.hot.status(function (newStatus, oldStatus) {
+    console.log('***'+newStatus)
+    document.location.reload(true)   
+  });
+}

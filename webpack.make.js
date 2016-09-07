@@ -6,6 +6,7 @@ var autoprefixer = require('autoprefixer-core');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
+
 module.exports = function makeWebpackConfig(options) {
   console.log(options)
   /**
@@ -34,8 +35,13 @@ module.exports = function makeWebpackConfig(options) {
   } else {
     config.entry = {
       common: ['angular', 'fastclick', 'jquery', 'angular-ui-router', './src/app.routerextras.js'],
-      app: './src/app.js'
+      app: ['./src/app.js']
     }
+  }
+  if(!TEST&&!BUILD){
+    config.entry.common.push('webpack-hot-middleware/client')
+    config.entry.app.push('webpack-hot-middleware/client')
+    console.log(config.entry.common)
   }
 
   /**
@@ -221,6 +227,8 @@ module.exports = function makeWebpackConfig(options) {
    */
   config.devServer = {
     contentBase: './dist',
+    inline: true,
+    hot:true,
     stats: {
       modules: false,
       cached: false,

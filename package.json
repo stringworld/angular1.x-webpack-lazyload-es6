@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A workflow for Angular made with Webpack",
   "scripts": {
+    "server": "node server.js",
     "build": "gulp",
     "build:test": "webpack --config webpack.build.js --bail -p",
     "dev": "webpack-dev-server --history-api-fallback   --progress",

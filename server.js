@@ -6,6 +6,7 @@ var config = require('./webpack.config')
 
 var app = new (require('express'))()
 var fs = require('fs');
+var util = require('util');
 var path = require('path');
 
 var port = 8080
@@ -21,56 +22,52 @@ app.get("/", function (req, res) {
 })
 
 app.use(function (request, response, next) {
-  var API = ['/error', 'true'];
-  setTimeout(function() {
-     console.log( matchDataSource())
-  }, 1000);
-
-  // if(API.includes(request.url)){
-  //   console.log('match success')
-  // }
-  
-  
-  if (request.url === "/error") {
+  var list = matchDataSource(__dirname + '/src/mockup/').map((file) => {
+    return file.split(__dirname + '/src/mockup').slice(-1)[0].replace('.js','')
+  })
+  console.info('request===>'.yellow + request.url.yellow)
+  //console.info(request.path);
+  if (list.includes(request.path)) {
+    var data = JSON.stringify(readSource(request.path));
+    console.log('response===>'.green+data.green)
     response.writeHead(200, { "Content-Type": "text/plain" });
-    response.end("Welcome to the homepage!\n");
+    response.end(data);
   } else {
+    response.writeHead(404, { "Content-Type": "text/plain" })
+    response.end("null");
     next();
   }
-});
+})
+
+
+// if (request.url === "/error") {
+//   response.writeHead(200, { "Content-Type": "text/plain" });
+//   response.end("Welcome to the homepage!\n");
+// } else {
+//   
+// }
+
 
 app.listen(port, function (error) {
   if (error) {
     console.error(error)
   } else {
-    console.info("==>🍬🍬🍬🍬Listening on port %s. Open up http://localhost:%s/ in your browser.".green, port, port)
+    console.info("==>🌍Listening on port %s. Open up http://localhost:%s/ in your browser.".green, port, port)
   }
 })
 
-function matchDataSource() {
-  return fs.readdir(__dirname + '/src/mockup/', function (err, files) {
-    if (err) {
-      console.error(err);
-      return;
-    } else {
-       apiMap = files.map(function (file) {
-        var filePath = path.normalize(__dirname + '/src/mockup/' + file);
-        var relativePath = `.${filePath.replace(__dirname, '')}`;//relative path
-        var data = require(relativePath)();
-        fs.stat(filePath, function (err, stat) {
-          var relativePath = filePath
-          if (stat.isFile()) {
-            //console.log(filePath.yellow + ' is: ' + 'file');
-          }
-          if (stat.isDirectory()) {
-            //console.log(filePath + ' is: ' + 'dir');
-          }
-        });
-        return relativePath.replace('./src/mockup','');
-      });   
-      return apiMap;
-    }    
-  });
+function matchDataSource(dir) {
+  //var path = __dirname + '/src/mockup/'
+  return fs.readdirSync(dir).reduce((list, file) =>{
+    var name = path.join(dir, file);
+    var isDir = fs.statSync(name).isDirectory();
+    return list.concat(isDir ? matchDataSource(name) : [name]);
+  }, []);
+}
+
+function readSource(path) {
+  var relativePath = `./src/mockup${path}.js`;
+  return require(relativePath)();
 }
 
 

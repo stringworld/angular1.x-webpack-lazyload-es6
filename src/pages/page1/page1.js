@@ -8,8 +8,8 @@ export default angular.module('app.page1', [uirouter,voicePlayer])
     .service('API', ['$http', '$q', '$rootScope', function ($http, $q, $rootScope) {
         return {
             get_data: function () {
-                var config = { params: {  } };
-                return $http.get('/error', config)
+                var config = { params: { userdata:'stone' } };
+                return $http.get('/getlist/error', config)
             }
         }
     }])

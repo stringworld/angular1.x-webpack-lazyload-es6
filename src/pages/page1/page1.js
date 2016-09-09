@@ -9,7 +9,7 @@ export default angular.module('app.page1', [uirouter,voicePlayer])
         return {
             get_data: function () {
                 var config = { params: {  } };
-                return $http.get('/book', config)
+                return $http.get('/error', config)
             }
         }
     }])

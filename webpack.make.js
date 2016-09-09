@@ -5,10 +5,12 @@ var webpack = require('webpack');
 var autoprefixer = require('autoprefixer-core');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var colors = require( "colors")
 
 
 module.exports = function makeWebpackConfig(options) {
-  console.log(options)
+  var option_info=JSON.stringify(options)
+  console.log(option_info.yellow)
   /**
    * Environment type
    * BUILD is for generating minified builds
@@ -39,9 +41,8 @@ module.exports = function makeWebpackConfig(options) {
     }
   }
   if(!TEST&&!BUILD){
-    config.entry.common.push('webpack-hot-middleware/client')
-    config.entry.app.push('webpack-hot-middleware/client')
-    console.log(config.entry.common)
+    config.entry.common.unshift('webpack-hot-middleware/client')
+    config.entry.app.unshift('webpack-hot-middleware/client')
   }
 
   /**

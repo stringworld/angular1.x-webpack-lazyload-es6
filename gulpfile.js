@@ -30,7 +30,7 @@ gulp.task('adaptBuilding', ['outputFile'], function () {
         .pipe(replace(cdn, ''))
         .pipe(inject.after('<head>', '\n<info '
             + 'version='+'"'+version+'"'+' '
-            + 'updata=['+cdn+'app.js,'+cdn+'app.css]'
+            + 'updata="['+cdn+'app.js,'+cdn+'app.css]"'
             + ' />')
         )
         .pipe(gulp.dest('dist/'));

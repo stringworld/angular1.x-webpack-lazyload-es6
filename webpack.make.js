@@ -36,7 +36,7 @@ module.exports = function makeWebpackConfig(options) {
     config.entry = {}
   } else {
     config.entry = {
-      //common: ['angular', 'fastclick', 'jquery', 'angular-ui-router', './src/app.routerextras.js'],
+      common: ['angular', 'fastclick', 'jquery', 'angular-ui-router', './src/app.routerextras.js'],
       app: ['./src/app.js']
     }
   }
@@ -186,10 +186,10 @@ module.exports = function makeWebpackConfig(options) {
     new ExtractTextPlugin('[name].css', {
       disable: !BUILD || TEST
     }),
-    // new webpack.optimize.CommonsChunkPlugin({
-    //   name: "common",
-    //   minChunks: Infinity,
-    // }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: "common",
+      minChunks: Infinity,
+    }),
   ];
 
   // Skip rendering index.html in test mode

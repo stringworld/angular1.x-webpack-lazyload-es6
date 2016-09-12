@@ -9,7 +9,7 @@ var fs = require('fs');
 var util = require('util');
 var path = require('path');
 
-var port = 8080
+var port = 8080;
 
 
 var compiler = webpack(config)

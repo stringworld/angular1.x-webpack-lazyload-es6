@@ -1,10 +1,8 @@
 import uirouter from 'angular-ui-router';
-import routing from './page1.route';
 import voicePlayer from '../../component/voicePlayer/voicePlayer';
 
 
-export default angular.module('app.page1', [uirouter,voicePlayer])
-    .config(routing)
+export default angular.module('page1', [uirouter,voicePlayer])
     .service('API', ['$http', '$q', '$rootScope', function ($http, $q, $rootScope) {
         return {
             get_data: function () {
@@ -55,7 +53,6 @@ export default angular.module('app.page1', [uirouter,voicePlayer])
 
     }])
     .controller('test2', ['$scope',function ($scope) {
-        
         $scope.voicedata=[
                 {
                     "url": "http://192.168.0.215:8082/stream/6448300e-8249-49af-b948-1ecedeaeaa27.mp3",

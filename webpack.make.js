@@ -5,11 +5,11 @@ var webpack = require('webpack');
 var autoprefixer = require('autoprefixer-core');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var colors = require( "colors")
+var colors = require("colors")
 
 
 module.exports = function makeWebpackConfig(options) {
-  var option_info=JSON.stringify(options)
+  var option_info = JSON.stringify(options)
   console.log(option_info.yellow)
   /**
    * Environment type
@@ -36,12 +36,12 @@ module.exports = function makeWebpackConfig(options) {
     config.entry = {}
   } else {
     config.entry = {
-      common: ['angular', 'fastclick', 'jquery', 'angular-ui-router', './src/app.routerextras.js'],
+      //common: ['angular', 'fastclick', 'jquery', 'angular-ui-router', './src/app.routerextras.js'],
       app: ['./src/app.js']
     }
   }
-  if(!TEST&&!BUILD){
-    config.entry.common.unshift('webpack-hot-middleware/client')
+  if (!TEST && !BUILD) {
+    //config.entry.common.unshift('webpack-hot-middleware/client')
     config.entry.app.unshift('webpack-hot-middleware/client')
   }
 
@@ -186,7 +186,10 @@ module.exports = function makeWebpackConfig(options) {
     new ExtractTextPlugin('[name].css', {
       disable: !BUILD || TEST
     }),
-    new webpack.optimize.CommonsChunkPlugin({ name: "common", minChunks: Infinity, }),
+    // new webpack.optimize.CommonsChunkPlugin({
+    //   name: "common",
+    //   minChunks: Infinity,
+    // }),
   ];
 
   // Skip rendering index.html in test mode
@@ -229,7 +232,7 @@ module.exports = function makeWebpackConfig(options) {
   config.devServer = {
     contentBase: './dist',
     inline: true,
-    hot:true,
+    hot: true,
     stats: {
       modules: false,
       cached: false,

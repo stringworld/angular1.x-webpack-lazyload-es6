@@ -1,9 +1,14 @@
 var Mock = require('mockjs');
 var data = function () {
     return Mock.mock({
-        'list|1-10': [{
-            'id|+1': 1
-        }]
+        name: {
+            first: '@FIRST',
+            middle: '@FIRST',
+            last: '@LAST',
+            full: '@first @middle @last',
+            ok:'@DATE',
+            hello:'333'
+        }
     })
 }
 module.exports = data;

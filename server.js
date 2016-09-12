@@ -67,6 +67,7 @@ function matchDataSource(dir) {
 
 function readSource(path) {
   var relativePath = `./src/mockup${path}.js`;
+  delete require.cache[require.resolve(relativePath)]
   return require(relativePath)();
 }
 

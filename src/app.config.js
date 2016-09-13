@@ -28,7 +28,7 @@ export default function routing($stateProvider, $urlRouterProvider, $sceDelegate
           templateProvider: ($q) => {
             return $q((resolve) => {
               // lazy load the view
-              require.ensure([], () => resolve(require('./pages/page1/page1.html')));
+              require.ensure([], () =>{ return resolve(require('./pages/page1/page1.html'))},'page1');
             });
           },
         }
@@ -41,7 +41,7 @@ export default function routing($stateProvider, $urlRouterProvider, $sceDelegate
               let module = require('./pages/page1/page1.js');
               $ocLazyLoad.load({ name: 'page1' });
               resolve(module.controller);
-            });
+            },'page1');
           });
           //return $ocLazyLoad.load('pages/page1/page1.js');
         }
@@ -54,7 +54,7 @@ export default function routing($stateProvider, $urlRouterProvider, $sceDelegate
           templateProvider: ($q) => {
             return $q((resolve) => {
               // lazy load the view
-              require.ensure([], () => resolve(require('./pages/page2/page2.html')));
+              require.ensure([], () => {return resolve(require('./pages/page2/page2.html'))},'page2');
             });
           },
         }
@@ -67,7 +67,7 @@ export default function routing($stateProvider, $urlRouterProvider, $sceDelegate
               let module = require('./pages/page2/page2.js');
               $ocLazyLoad.load({ name: 'page2' });
               resolve(module.controller);
-            });
+            },'page2');
           });
           //return $ocLazyLoad.load('pages/page1/page1.js');
         }

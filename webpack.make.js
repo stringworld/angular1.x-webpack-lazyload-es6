@@ -64,11 +64,11 @@ module.exports = function makeWebpackConfig(options) {
 
       // Filename for entry points
       // Only adds hash in build mode
-      filename: BUILD ? '[name].js' : '[name].bundle.js',
+      filename: BUILD ? '[name].[hash:8].js' : '[name].[hash:8].bundle.js',
 
       // Filename for non-entry points
       // Only adds hash in build mode
-      chunkFilename: BUILD ? '[name].[hash].js' : '[name].bundle.js'
+      chunkFilename: BUILD ? '[name].[hash:8].js' : '[name].[hash:8].bundle.js'
     }
   }
 
@@ -151,7 +151,12 @@ module.exports = function makeWebpackConfig(options) {
     // Reference: https://github.com/webpack/style-loader
     // Use style-loader in development for hot-loading
     loader: ExtractTextPlugin.extract('style', 'css?sourceMap!postcss')
-  };
+  }
+  var lessLoader = {
+    test: /\.less$/,
+    //less loader
+    loader: "style!css!less?strictMath&noIeCompat"
+  }
 
   // Skip loading css in test mode
   if (TEST) {
@@ -161,7 +166,7 @@ module.exports = function makeWebpackConfig(options) {
   }
 
   // Add cssLoader to the loader list
-  config.module.loaders.push(cssLoader);
+  config.module.loaders.push(cssLoader,lessLoader);
 
   /**
    * PostCSS
@@ -188,7 +193,7 @@ module.exports = function makeWebpackConfig(options) {
     }),
     new webpack.optimize.CommonsChunkPlugin({
       name: "common",
-      minChunks: Infinity,
+      minChunks: 2,
     }),
   ];
 

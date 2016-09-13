@@ -27,7 +27,7 @@ gulp.task('adaptBuilding', ['outputFile'], function () {
     var version = now.getTime();
     //remove CDN and add version
     gulp.src('./dist/index.html')
-        .pipe(replace(cdn, ''))
+        //.pipe(replace(cdn, ''))
         .pipe(inject.after('<head>', '\n<info '
             + 'version='+'"'+version+'"'+' '
             + 'updata="['+cdn+'app.js,'+cdn+'app.css]"'

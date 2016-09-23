@@ -1,8 +1,8 @@
-import uirouter from 'angular-ui-router';
+
 import voicePlayer from '../../component/voicePlayer/voicePlayer';
 
 
-export default angular.module('page1', [uirouter,voicePlayer])
+export default angular.module('page1', [voicePlayer])
     .service('API', ['$http', '$q', '$rootScope', function ($http, $q, $rootScope) {
         return {
             get_data: function () {

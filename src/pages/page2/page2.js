@@ -1,7 +1,5 @@
-import uirouter from 'angular-ui-router';
 
-
-export default angular.module('page2', [uirouter])
+export default angular.module('page2', [])
 
   
   .name;

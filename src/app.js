@@ -12,16 +12,22 @@ import initial from './app.initial';
 
 //routers
 import home from './features/home';
+import routes from './pages/index';
 
 
-angular.module('app', [uirouter, routerextras,ocLazyLoad, home])
+let app = angular.module('app', [uirouter, routerextras, ocLazyLoad, home])
   .run(initial)
   .config(routing);
+
+routes.forEach((ele, index) => {
+  app.config(ele);
+})
+
 
 if (module.hot) {
   //module.hot.accept();
   module.hot.status(function (newStatus, oldStatus) {
-    console.log('***'+newStatus)
-    document.location.reload(true)   
+    console.log('***' + newStatus)
+    document.location.reload(true)
   });
 }

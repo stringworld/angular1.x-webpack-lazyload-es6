@@ -1,18 +1,11 @@
 
 import voicePlayer from '../../component/voicePlayer/voicePlayer';
+import page1Service from './page1.service';
 
-
-export default angular.module('page1', [voicePlayer])
-    .service('API', ['$http', '$q', '$rootScope', function ($http, $q, $rootScope) {
-        return {
-            get_data: function () {
-                var config = { params: { userdata:'stone' } };
-                return $http.get('/getlist/error', config)
-            }
-        }
-    }])
-    .controller('test1', ['API',function (API) {
-        API.get_data().then((response)=>{
+export default angular.module('page1', [voicePlayer,page1Service])
+   
+    .controller('test1', ['page1_API',function (page1_API) {
+        page1_API.get_data().then((response)=>{
 
         console.log(response)
 

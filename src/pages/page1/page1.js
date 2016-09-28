@@ -1,5 +1,5 @@
 
-import voicePlayer from '../../component/voicePlayer/voicePlayer';
+import voicePlayer from '../../components/voicePlayer/voicePlayer';
 import page1Service from './page1.service';
 
 export default angular.module('page1', [voicePlayer,page1Service])

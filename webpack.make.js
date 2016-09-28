@@ -36,7 +36,7 @@ module.exports = function makeWebpackConfig(options) {
     config.entry = {}
   } else {
     config.entry = {
-      common: ['angular', 'fastclick', 'jquery', 'angular-ui-router', './src/app.routerextras.js'],
+      common: ['angular', 'fastclick', 'jquery', 'angular-ui-router', './src/common/js/app.routerextras.js'],
       app: ['./src/app.js']
     }
   }

@@ -105,21 +105,21 @@ module.exports = function makeWebpackConfig(options) {
       loader: 'babel?optional=runtime',
       exclude: /node_modules/
     }, {
-        // ASSET LOADER
-        // Reference: https://github.com/webpack/file-loader
-        // Copy png, jpg, jpeg, gif, svg, woff, woff2, ttf, eot files to output
-        // Rename the file using the asset hash
-        // Pass along the updated reference to your code
-        // You can add here any file extension you want to get copied to your output
-        test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$/,
-        loader: 'url-loader?limit=8192'
-      }, {
-        // HTML LOADER
-        // Reference: https://github.com/webpack/raw-loader
-        // Allow loading html through js
-        test: /\.html$/,
-        loader: `html-loader?root=.`
-      }]
+      // ASSET LOADER
+      // Reference: https://github.com/webpack/file-loader
+      // Copy png, jpg, jpeg, gif, svg, woff, woff2, ttf, eot files to output
+      // Rename the file using the asset hash
+      // Pass along the updated reference to your code
+      // You can add here any file extension you want to get copied to your output
+      test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$/,
+      loader: 'url-loader?limit=8192'
+    }, {
+      // HTML LOADER
+      // Reference: https://github.com/webpack/raw-loader
+      // Allow loading html through js
+      test: /\.html$/,
+      loader: `html-loader?root=.`
+    }]
   };
 
   // ISPARTA LOADER
@@ -166,7 +166,7 @@ module.exports = function makeWebpackConfig(options) {
   }
 
   // Add cssLoader to the loader list
-  config.module.loaders.push(cssLoader,lessLoader);
+  config.module.loaders.push(cssLoader, lessLoader);
 
   /**
    * PostCSS
@@ -225,7 +225,7 @@ module.exports = function makeWebpackConfig(options) {
 
       // Reference: http://webpack.github.io/docs/list-of-plugins.html#uglifyjsplugin
       // Minify all javascript, switch loaders to minimizing mode
-      new webpack.optimize.UglifyJsPlugin()
+      new webpack.optimize.UglifyJsPlugin({ sourceMap: false })
     )
   }
 

@@ -24,6 +24,7 @@ routes.forEach((ele, index) => {
 })
 
 
+
 if (module.hot) {
   //module.hot.accept();
   module.hot.status(function (newStatus, oldStatus) {

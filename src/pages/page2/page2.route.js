@@ -7,16 +7,16 @@ export default function route($stateProvider, $urlRouterProvider, $sceDelegatePr
       url: '/page2',
       views: {
         'page2': {
-          templateProvider: ($q) => {
+          templateProvider: ['$q',function($q){
             return $q((resolve) => {
               // lazy load the view
               require.ensure([], () => { return resolve(require('./page2.html')) }, 'page2');
             });
-          },
+          }],
         }
       },
       resolve: {
-        loadMyCtrl: ($q, $ocLazyLoad) => {
+        loadMyCtrl:  ['$q', '$ocLazyLoad',function($q, $ocLazyLoad){
           return $q((resolve) => {
             require.ensure([], () => {
               // load whole module
@@ -26,7 +26,7 @@ export default function route($stateProvider, $urlRouterProvider, $sceDelegatePr
             }, 'page2');
           });
           //return $ocLazyLoad.load('pages/page1/page1.js');
-        }
+        }]
       }
     })
 

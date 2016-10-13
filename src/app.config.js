@@ -7,6 +7,7 @@ export default function routing($stateProvider, $urlRouterProvider, $sceDelegate
   //$locationProvider.html5Mode(true);
   $sceDelegateProvider.resourceUrlWhitelist([
     'self',
+    'http://127.0.0.1:8080/**',
     'http://*.thedoc.cn/**',
     'http://p.thedoc.cn/**',
     'http://192.168.1.212:8082/**',

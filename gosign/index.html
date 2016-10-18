@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0,minimal-ui">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+	<title></title>
+	<link rel="stylesheet" href="css/common.css">
+	<link rel="stylesheet" href="css/gosign.css">
+	<style>
+
+	</style>
+</head>
+<body>
+	<div id="wrapper">
+		<!--<div id="doc_title">
+			<div class="top-nbsp"></div>
+			<p class="navigation-top fixed-top">
+				<a href="" onclick="history.go(-1)" class="left"></a>
+				家庭医生
+				<a href="" onclick="history.go(-1)" class="right"></a>
+			</p>
+		</div>-->
+        <div id="scroller">
+            <img src="http://upyun.thedoc.cn/cdn/c_home_page/gosign/signe_1.jpg" />
+            <img src="http://upyun.thedoc.cn/cdn/c_home_page/gosign/signe_2.jpg" />
+            <img src="http://upyun.thedoc.cn/cdn/c_home_page/gosign/signe_3.jpg" />
+            <img src="http://upyun.thedoc.cn/cdn/c_home_page/gosign/signe_4.jpg" />
+            <img src="http://upyun.thedoc.cn/cdn/c_home_page/gosign/signe_5.jpg" />
+            <img src="http://upyun.thedoc.cn/cdn/c_home_page/gosign/signe_6.jpg" />
+            <img src="http://upyun.thedoc.cn/cdn/c_home_page/gosign/signe_7.jpg" id="pad_px"/>
+		</div>
+		<div class="goSigned">
+			<!--<img src="images/new/signe_8.jpg" class="goSingnedBnt"/>-->
+			<div class="goSingnedBnt">去签约</div>
+		</div>
+	</div> 
+	<div class="share_ico"><img class="top_in" src="./images/lead-share.png" alt="提示分享图"/></div>
+	<!--<script src="js/get_label_width.js"></script>-->
+	<script src="js/rem.js"></script>
+	<script src="js/bridge.js"></script>
+	<script src="http://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+	<script>
+		$('#pad_px').css('margin-bottom',$('.goSingnedBnt').height())
+		function GetUrlValue(name){
+			var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+			var r = window.location.search.substr(1).match(reg);
+			if(r!=null)return  decodeURI(r[2]); return null;
+		}
+
+		$('.share_ico').click(function(){
+			$(this).hide();
+		})
+		var browser = {
+			versions: function () {
+				var u = navigator.userAgent,
+					app = navigator.appVersion;
+				return {
+					trident: u.indexOf('Trident') > -1,
+					presto: u.indexOf('Presto') > -1,
+					webKit: u.indexOf('AppleWebKit') > -1,
+					gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1,
+					mobile: !!u.match(/AppleWebKit.*Mobile.*/) || !!u.match(/AppleWebKit/),
+					ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/),
+					android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1,
+					iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1,
+					iPad: u.indexOf('iPad') > -1,
+					webApp: u.indexOf('Safari') == -1,
+					weixin: !!u.match(/MicroMessenger/i)
+				};
+			} (),
+			language: (navigator.browserLanguage || navigator.language).toLowerCase()
+		}
+
+		var and = browser.versions.android;
+		var ios = browser.versions.ios;
+		var weixin=browser.versions.weixin;
+		// setTimeout(function(){
+			// 0 表示在app中打开 1 表示在浏览器中打开
+			var appVersion=GetUrlValue('appVersion');
+
+			if(appVersion=='2.0.0'){
+				var sign_title;			//images/shareIcon.png			http://p.thedoc.cn/prm2.0/gosign/images/shareIcon.png
+				sign_title=JSON.stringify({'params':'家庭医生','shareTitle':'什么是签约家庭医生？','shareIcon':'http://p.thedoc.cn/prm2.0/gosign/images/shareIcon.png','shareUrl':'http://p.thedoc.cn/prm2.0/gosign/index.html','shareContent':'「家庭医生制」是指通过签约方式，具备家庭医生条件的全科医生与签约家庭建立起一种长期、稳定的服务关系，以便对签约家庭的健康进行全过程维护的服务制度。'});
+
+				console.log(sign_title)
+				$bridge.callMobile("changeTitle", sign_title);
+				$('.goSigned').bind('click',function(e){
+					
+					var sign_url=JSON.stringify({'success':1});
+					$bridge.callMobile("router", sign_url);
+					// alert('app内部打开')
+				})
+			}else{
+				// $('#doc_title').show();
+				$('.goSigned').bind('click',function(e){
+					if(weixin){
+						$('.share_ico').show();
+					}else{
+						location.href='medipat://medishare/?router=router://doctorList';
+					}
+					// alert('外部打开')
+				})
+			}
+		// },10)
+	</script>
+</body>
+</html>

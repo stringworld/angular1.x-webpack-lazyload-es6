@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html ng-app="labelList">
+
+<head>
+    <meta charset="UTF-8">
+    <title>宣教文章</title>
+
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0,minimal-ui">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+
+    <script src="http://www.angularjsapi.cn/angular-1.3.0.14/angular.js"></script>
+    <script src="http://cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>
+    <script src="js/rem.js"></script>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/list.css">
+    <!--<link rel="stylesheet" href="http://apps.bdimg.com/libs/bootstrap/3.3.0/css/bootstrap.min.css">-->
+    <style>
+        .content li {
+            height: 1.7rem;
+        }
+        
+        #labelContrlList {}
+        
+        .content_photo {
+            border-radius: 2px;
+        }
+        
+        .content_title {
+            color: #434343;
+            height: 0.8rem !important;
+            width: 85% !important;
+            text-align: left !important;
+            margin-left: 0 !important;
+            padding-left: 2% !important;
+            padding-top: 0.1rem;
+        }
+        
+        .content_btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0.8rem;
+            height: 100%;
+            /*background:yellow;*/
+            z-index: 10;
+        }
+    </style>
+</head>
+
+<body ng-controller="labelContrlList">
+    <div>
+        <!--<div class="top-nbsp"></div>
+        <p class="navigation-top fixed-top">
+            <a href="" class="left"></a>
+            宣教文章
+            <!--<a href="" style="background: none;" class="right" ng-click="post_all_patIds()">确定</a>
+        </p>-->
+        <ul class="content" id="labelContrlList">
+            <li ng-repeat="essayitems in label_data_json" ng-click="show_pat_mes($event,$index)">
+                <span class="content_photo_"><img class="content_photo" ng-src={{essayitems.essay_icon}}  alt="头像" onerror="this.src='images/me_default.png'"></span>
+                <span class="content_txt">
+                    <p class="content_title" ng-bind="essayitems.essay_title">
+                        <!--经常吃西瓜的十大危害，一定要知道一定要知道-->
+                    </p>
+                    <p class="">
+                        <span class="label_checkbox">
+                            <img ng-src="./images/check_{{essayitems.essay_tick}}.png"/>
+                        </span>
+                </p>
+                </span>
+                <span class="content_btn" ng-click="show_tick($event,$index)"></span>
+            </li>
+        </ul>
+    </div>
+    <script src="./js/rem.js"></script>
+    <script src="js/get_label_width.js"></script>
+    <script src="js/bridge.js"></script>
+    <script src="js/lazy.js"></script>
+    <script>
+
+        window.onload=function(){
+            $bridge.callMobile("changeTitle", {'params':'宣教文章'});
+            // save_status(0)
+            // $bridge.callMobile("finishSelect", 'ok');
+        }
+        //右侧确认按钮的显示状态 0不显，1半显 2全显
+        function save_status(status){
+            // var save_status=JSON.stringify();
+            $bridge.callMobile("rightBtn", {'status':status});
+        }
+        //是否显示弹框 0不弹框 1弹框
+        function isShowAlt(status){
+            // var showalet_status=JSON.stringify();
+            $bridge.callMobile("isShowAlt", {'status':status});
+        }
+        //1成功0失败
+        function backIndex(status){
+            // var backIndex_status=JSON.stringify();
+            $bridge.callMobile("back", {'status':status});
+        }
+
+        var essayId_='';
+        $bridge.RegisterFunction("essayIdList");
+        //mobile调用我的方法，传值给我id
+        function essayIdList(data){
+            // var data_=JSON.stringify(data)
+            // alert(data.toString())
+            essayId_=data.essayId
+        }
+
+        var data_json=[];   //总数据
+        var data_json_status=[];    //保存原数据用户操作的每一页选择的状态,选中的患者
+
+
+        var app=angular.module('labelList',[]);
+        app.controller('labelContrlList',function($scope,$http){
+            var and = browser.versions.android;
+            $bridge.RegisterFunction("post_pat_value");
+
+            //显示数值
+            $scope.label_data_json=[];
+
+            //点击切换分页
+            $scope.change = function(){
+                //调用ajax取值回来渲染
+                $scope.label_data_json=[];      //'http://192.168.0.215/prm2.0';
+
+                $http({
+                    "url":this_get_url+"/essay/findArticlesByReleaseTo/",
+                    // "url":"list.json",
+                    "method":"get",
+                    "params":{
+                        "releaseTo":'3',    //发布到 值为3表示发布到宣教
+                    }
+                })
+                    .success(function(res){
+                        //res数据结构
+
+                        var this_page_json=[];
+                        for(var key in res.data.list){
+                            this_page_json.push({
+                                "id":res.data.list[key].id,
+                                "essay_icon":res.data.list[key].icon||'images/me_default.png',
+                                "essay_title":res.data.list[key].title,//'经常吃西瓜的十大危害，一定要知道一定要知道',
+                                "essay_link":res.data.list[key].link,
+                                "essay_tick":false
+                            });
+
+                            // alert(essayId_)
+                            if(this_page_json[key].id==essayId_){
+                                this_page_json[key].essay_tick=true;
+                            }
+                        }
+
+                        $scope.label_data_json=this_page_json;
+                        // $scope.$apply(); 
+                        
+                    })
+                    .error(function(res){
+                        console.log(res);
+                    });
+
+            };
+            
+             //初始化
+            $scope.change();
+
+            //选中事件，显示箭头
+            $scope.show_tick = function(event,index) {
+                event.stopPropagation();
+                for(var key in $scope.label_data_json){
+                    $scope.label_data_json[key].essay_tick = false;
+                    data_json_status=[];
+                }
+
+                $scope.label_data_json[index].essay_tick = !$scope.label_data_json[index].essay_tick;
+                if($scope.label_data_json[index].essay_tick){
+                    data_json_status.splice($scope.label_data_json[index].id,0,{
+                        'id':$scope.label_data_json[index].id,
+                        'essay_icon':$scope.label_data_json[index].essay_icon,
+                        'essay_title':$scope.label_data_json[index].essay_title,
+                        'essay_link':$scope.label_data_json[index].essay_link,
+                        'essay_tick':$scope.label_data_json[index].essay_tick
+                    });
+                    // console.log('add',index,$scope.label_data_checked)
+                }
+                // console.log(data_json_status)
+
+                //传值给mobile端，选中文章
+                var essay_status=JSON.stringify({
+                    'essayId':$scope.label_data_json[index].id,
+                    'essayTitle':$scope.label_data_json[index].essay_title,
+                    'essayIcon':$scope.label_data_json[index].essay_icon,
+                    'essayLink':$scope.label_data_json[index].essay_link,
+                    'status':1      //返回
+                });
+                console.log(essay_status)
+                $bridge.callMobile("selectedEssay",essay_status);
+
+            };
+
+            //查看文章具体的信息,调用mobile的方法，传值
+            $scope.show_pat_mes=function(event,index){
+                event.stopPropagation();
+                var essayLink_=JSON.stringify({'essayLink':$scope.label_data_json[index].essay_link,'essayTitle':$scope.label_data_json[index].essay_title});
+                $bridge.callMobile("disEssayDetial", essayLink_);
+            }
+        });
+</script>
+</body>
+
+</html>

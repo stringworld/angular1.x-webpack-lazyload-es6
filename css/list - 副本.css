@@ -1,0 +1,223 @@
+html,body{margin: 0;padding: 0;}
+
+
+/**
+
+    标签管理--已签约
+
+*/
+.label_title{
+    width:100%;
+    height: 0.5rem;
+    line-height: 0.5rem;
+    text-indent: 2%;
+    font-size: 0.25rem;
+    color:#ADADAD;
+    background-color: #eee;
+}
+.labelInput{
+    width: 100%;
+    height: 0.8rem;
+    line-height: 0.8rem;
+    background-color: #fff;
+    color: #333;
+}
+.labelInput input{
+    width:100%;
+    height:100%;
+    border:none;
+    text-indent: 2%;
+    font-size: 0.25rem;
+    color: #333;
+}
+
+.content {
+    width: 100%;
+    height: 100%;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background-color: #ccc;
+}
+
+.content li {
+    position: relative;
+    display: block;
+    padding: 4% 0;
+    width: 100%;
+    height: 2rem;
+    /*line-height: 1.5rem;*/
+    background-color: #fff;
+    border-bottom: 1px solid #E9E9E9;
+    font-size: 0.25rem;
+}
+
+.content_photo_ {
+    position: absolute;
+    width: 25%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    display: -webkit-flex;
+}
+
+.content_photo {
+    width: 90%;
+    border-radius: 50%;
+}
+
+.content_txt {
+    position: absolute;
+    height: 100%;
+    top: 0;
+    width: 74%;
+    left: 25%;
+}
+
+.content_txt p {
+    position: relative;
+    width: 99%;
+    line-height: 25px !important;
+    margin: 2% 0 2% 2%;
+}
+
+.content_title {
+    margin-top: 4% !important;
+    color: #747474;
+}
+
+.content_address {
+    color: #AFAFAF;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.content_list_label {
+    width: 100%;
+    height: 0.7rem;
+    overflow: hidden;
+    display: block;
+}
+
+.content_label {
+    max-width: 90%;
+    /*min-width: 10%;*/
+    padding: 0 2%;
+    margin: 0 2% 6% auto;
+    display: inline-block;
+    border: 1px solid #CF6A90;
+    color: #CF6A90;
+    border-radius: 10px;
+    border-bottom-right-radius: 0;
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/**
+
+    添加标签
+
+*/
+
+.add_label{
+    width:100%;
+    background-color: #FFFFFF;
+}
+.add_label .add_label_title{
+    width:100%;
+    height: 0.5rem;
+    line-height: 0.5rem;
+    font-size: 0.25rem;
+    color:#767676;
+    margin-top: 3%;
+    padding: 0 2%;
+}
+
+.add_label .labelInput{
+    width: 100%;
+    height: 0.8rem;
+    line-height: 0.8rem;
+    background-color: #fff;
+    color: #333;
+    border-top:1px solid #ccc;
+    border-bottom:1px solid #ccc;
+}
+.add_label .labelInput input{
+    width:80%;
+    height:100%;
+    border:none;
+    text-indent: 2%;
+    font-size: 0.25rem;
+    color: #333;
+}
+
+.add_label .labelInput .fish{
+    width:15%;
+    text-align: center;
+    height: 100%;
+}
+
+.add_label .label_list{
+    width:100%;
+    padding: 0 2%;
+}
+
+.add_label .label_list .li_label{
+    max-width: 97%;
+    padding: 0 2%;
+    margin: 0 2% 2% auto;
+    display: inline-block;
+    border: 1px solid #CF6A90;
+    color: #CF6A90;
+    border-radius: 10px;
+    border-bottom-right-radius: 0;
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    height: 0.4rem;
+    line-height: 0.4rem;
+}
+
+.add_label .label_list .li_checked{
+    background-color: #BE3468;
+    color:#FFFFFF;
+}
+.add_label .label_list .li_unchecked{
+    border: 1px solid #ACACAC;
+    color: #ACACAC;
+}
+
+
+
+/**
+
+    标签分组--已签约
+
+*/
+
+.label_groups{
+    width:100%;
+}
+.label_groups li{
+    width:100%;
+    height: 0.6rem;
+    line-height: 0.6rem;
+    font-size: 0.25rem;
+    padding: 0 2%;
+}
+.label_groups li:nth-child(1) {
+    /*justify-content: center;*/
+    align-items: center;
+    display: -webkit-flex;
+}
+.label_groups li:nth-child(1) span{
+    
+}

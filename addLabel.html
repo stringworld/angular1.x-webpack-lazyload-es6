@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="labelList">
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0,minimal-ui">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+
+    <script src="js/rem.js"></script>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/list.css">
+</head>
+
+<body style="background-color: #FFFFFF;overflow-x:hidden;" ng-controller="labelContrlList">
+<!--<div class="top-nbsp"></div>-->
+<!--<h1 class="navigation-top fixed-top">-->
+    <!--<a href="" onclick="history.go(-1)" class="left"></a>-->
+    <!--添加标签-->
+    <!--<a href="" class="right" style="display:block;" id="label_value_save" ng-class="{label_change_save:changeCount==1}" ng-click="label_value_save($index)">保存</a>-->
+<!--</h1>-->
+
+<div class="add_label">
+    <h2 class="add_label_title">使用标签</h2>
+    <div class="label_list" ng-click="$event.stopPropagation();">
+        <ul>
+            <li class="li_label li_bable_press" my-touchpress="press($index,$event)"
+                ng-class="{li_checked:currentId==item.id}" my-dataId="{{item.id}}" ng-click="changeBg($event,$index)"
+                ng-repeat="item in ListData | orderBy:order" ng-if="item.label_true">
+                <span ng-bind="item.name"></span>
+                <span ng-class={del_img:item.show_pic} ng-click="del_label($index,$event);$event.stopPropagation();">
+                    <img ng-class="{show_img:item.show_pic}" src="images/del.png"/>
+                </span>
+                
+            </li>
+        </ul>
+    </div>
+    <!--输入框-->
+    <form>
+        <div class="labelInput">
+            <input type="text" style="background-color:#F5F5F5;" placeholder="请在此输入标签" ng-change="change_label(inValue)" id="label_IO" ng-model="inValue">
+        </div>
+    </form>
+
+    <h2 class="add_label_title">全部标签</h2>
+
+    <div class="label_list">
+        <ul>
+            <li class="li_label li_unchecked" ng-click="addLabel($index);$event.stopPropagation();" ng-repeat="item in ListData | orderBy:order" ng-module={{item.id}} ng-bind="item.name"></li>
+        </ul>
+    </div>
+    <!--保存提示-->
+    <div class="hint_mes hint_hide">
+        <div class="hint_content">
+            <h1 class="hint_title">保持本次编辑?</h1>
+            <div class="hint_status">
+                <span class="hint_cancel" ng-click="hint_cancel()">取消</span>
+                <span class="hint_sure" ng-click="hint_sure()">确定</span>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script src="http://apps.bdimg.com/libs/angular.js/1.4.6/angular.min.js"></script>
+<script src="http://cdn.bootcss.com/hammer.js/2.0.8/hammer.min.js"></script>
+<script src="js/get_label_width.js"></script>
+<script src="js/bridge.js"></script>
+<script>
+    /***
+     *
+     *
+     https://github.com/nglar/ngTouchstart
+
+     http://stackoverflow.com/questions/26170029/ng-touchstart-and-ng-touchend-in-angularjs
+     *
+     */
+
+// function limitLength(value) { 
+//     var hanzi=value.replace(/[^\u4e00-\u9fff]/ig,"").length;
+//     var yinwen=value.replace(/[^a-z]/ig,"").length;
+//     var num=value.replace(/\D/ig,"").length;
+//     var other=value.replace(/[^ ]/ig,"").length+value.replace(/[^\n]/ig,"").length+value.replace(/[\u4e00-\u9fffa-z\d\s\n\r]/ig,"").length;
+//     if(hanzi<=15||yinwen<=30){
+        
+//         return;
+//     }
+//     var ss = "汉字 "+ value.replace(/[^\u4e00-\u9fff]/ig,"").length +" 个。\n";
+//         ss += "英文 "+ value.replace(/[^a-z]/ig,"").length +" 个。\n";
+//         ss += "数字 "+ value.replace(/\D/ig,"").length +" 个。\n";
+//         ss += "空格 "+ value.replace(/[^ ]/ig,"").length +" 个。\n";
+//         ss += "回车 "+ value.replace(/[^\n]/ig,"").length +" 个。\n";
+//         ss += "特殊字符 "+ value.replace(/[\u4e00-\u9fffa-z\d\s\n\r]/ig,"").length +" 个。\n";
+//         console.log(ss)
+// }
+
+
+
+
+    var userData=GetUrlValue("userData");
+    var relationType=GetUrlValue("relationType");
+    var groupsAll=GetUrlValue("groupsAll");
+    // var relationType=101;
+    var this_cookie;
+    if(userData){
+        this_cookie='SESSION='+userData;
+    }else{
+        this_cookie=document.cookie;
+    }
+    
+    window.onload=function(){
+        var link_;
+        if(groupsAll==1){
+            link_=JSON.stringify({'params':'批量添加标签'});
+        }else{
+            link_=JSON.stringify({'params':'标签'});
+        }
+        $bridge.callMobile("changeTitle", link_)
+
+        $bridge.callMobile("finishLoad",{'key':JSON.stringify("ok")});
+
+        $bridge.RegisterFunction("get_label_value");
+        $bridge.RegisterFunction("label_value_save");
+
+        $('document').bind('touchstart',function(e){
+            e.stopPropagation();
+        });
+    }
+    function save_status(status){
+        var save_status=JSON.stringify({'type':status});
+        $bridge.callMobile("rightBtn", save_status);
+    }
+
+    function isShowAlt(status){
+        var showalet_status=JSON.stringify({'status':status});
+        $bridge.callMobile("isShowAlt", showalet_status);
+    }
+    function backIndex(status){
+        //1成功0失败
+        var backIndex_status=JSON.stringify({'success':status});
+        $bridge.callMobile("back", backIndex_status);
+    }
+
+    var temp=[];
+    var app = angular.module('labelList', []);
+    app.controller('labelContrlList', function ($scope,$http) {
+        //是否显示保存按钮
+        $scope.isShowSave=true;
+        //用户输入文字，但没有点击添加标签按钮
+        $scope.isAddLabel=false;
+
+        //已签约
+        window.get_label_value=function (data){
+            var data_ = JSON.stringify(data);
+            // alert(data+'get_label_value')
+        }
+        var doctorTagList=[];       
+        var patpatientTagListadd=[];
+
+
+        var relationType=GetUrlValue("relationType");
+        var patientIds=GetUrlValue("label_value_add");
+        var page=GetUrlValue("page");
+        var checkedPerson=GetUrlValue("count");
+        var this_index;
+
+        console.log(patientIds)
+        console.log(checkedPerson)
+
+
+        function all_label_value (page,patientIds){
+            // alert('page='+page+'patientIds='+patientIds+'checkedPerson='+checkedPerson)
+            console.log(patientIds)
+            var page_label=JSON.stringify({'page':page,'ids':patientIds,'count':checkedPerson,'goback':document.referrer});
+            console.log({'page':page,'ids':patientIds,'count':checkedPerson,'goback':document.referrer})
+            $bridge.callMobile("all_label_value", page_label);
+        }
+     
+        all_label_value(page,patientIds);
+
+        get_label(relationType,patientIds)
+        // alert(patientIds.toString())
+        function get_label(relationType,patientIds){
+            var data=[];
+            $.ajax({
+                type:'get',
+                url:this_get_url+'/doctor/doctorAndPatientTagList/',
+                data:{
+                    'relationType':relationType,
+                    'patientIds':patientIds,
+                    'userData':this_cookie
+                }, 
+                async: false,
+                success:function(voucher_json,status){
+                    if(voucher_json.isSuccess){
+                        // label_data_json=voucher_json;
+                        for(var key in voucher_json.data.doctorTagList){
+                            doctorTagList.push({
+                                'id':key,
+                                'name':voucher_json.data.doctorTagList[key],
+                                'label_true':false,
+                                'show_pic':false
+                            })
+                            for(var key_ in voucher_json.data.patientTagList){
+                                if(voucher_json.data.doctorTagList[key]==voucher_json.data.patientTagList[key_]){
+                                    doctorTagList[key].label_true=true;
+                                }
+                            }
+                        }
+                        
+                    }
+                    console.log(voucher_json)
+                }
+            });
+        }
+
+        $scope.changeCount=0;
+        save_status(1)
+
+        $scope.ListData = doctorTagList;
+        $scope.hint_hide_status=0;
+
+        //保存数据
+        window.label_value_save=function(index) {
+
+            var addDoctorTags=[];
+            var addPatientTags=[];
+            var name=$('#label_IO').val().trim();
+
+            if($scope.isAddLabel && name!=''){
+                $scope.ListData.push({'id': $scope.ListData.length+1, 'name': name, 'label_true': true});
+                $scope.inValue=''
+                $scope.changeCount=1;
+                save_status(2)
+            }
+
+            setTimeout(function(){
+                if($scope.changeCount){
+                    // alert(index);
+                    for(var key in $scope.ListData){
+                        if($scope.ListData[key].label_true){
+                            addPatientTags.push($scope.ListData[key].name);
+                            // patientIds.push($scope.ListData[key].id)
+                        }
+                        addDoctorTags.push($scope.ListData[key].name);
+                    }
+                    console.log(addDoctorTags.join(","))
+                    console.log(addPatientTags.join(","))
+                            // $scope.$apply()
+                    var label_value = $('#label_title').val();
+
+                    $.ajax({
+                        type:'post',
+                        url:this_get_url+'/doctor/tagPatient/',
+                        data:{
+                            'relationType':relationType,
+                            'addPatientTags':addPatientTags.join(","),
+                            'addDoctorTags':addDoctorTags.join(","),
+                            'patientIds':patientIds,
+                            'userData':this_cookie
+                        }, 
+                        async: false,
+                        success:function(voucher_json,status){
+                            if(voucher_json.isSuccess){
+                                // label_data_json=voucher_json;
+                                // alert('添加标签完成');
+                                backIndex(1);
+                                // location.href=this_url+'label-list.html?userData=d712e3d5-967b-4bb2-a5b8-9ec9cec16d89&relationType=102';
+                            }
+                            console.log(voucher_json)
+                        },
+                        error:function(){
+                            backIndex(0);
+                        }
+                    });
+                }
+            },10)
+        };
+
+
+        $scope.change_label=function(changeName){
+            var hanzi = changeName.replace(/[^\u4e00-\u9fa5]/gi,"").length;
+            var len = hanzi*2+(changeName.length-hanzi);
+            console.log(hanzi)
+            // if(hanzi>=30){
+            //     // alert(hanzi)
+            // }
+            if(changeName==''||changeName==null||len>=30){
+                save_status(1);
+                isShowAlt(0);   //不弹框
+                $scope.isShowSave=false;
+            }else{
+                save_status(2)
+                isShowAlt(1);   //弹框
+                $scope.isShowSave=true;
+                $scope.isAddLabel=true;
+            }
+        };
+
+        //删除 标签
+        $scope.del_label = function (index,event) {
+            // event.preventDefault();
+            event.stopPropagation();
+            setTimeout(function(){
+                $scope.ListData[index].label_true = !$scope.ListData[index].label_true;
+                $scope.ListData[index].show_pic = !$scope.ListData[index].show_pic;
+                $scope.currentId = $scope.ListData[index].id;
+                $scope.changeCount=1;
+                save_status(2);
+                isShowAlt(1);   //弹框
+                $scope.$apply();
+                $scope.this_list_index_=false;
+                // alert('this_list_index_='+$scope.this_list_index_)
+                $(window).unbind('click',removeSelected);
+            },0)
+        };
+
+        //添加标签
+        $scope.addLabel = function (index) {
+            $scope.this_list_index_=false;
+            // $scope.ListData[index].label_true=!$scope.ListData[index].label_true;    //相互取反
+            if(!$scope.ListData[index].label_true){
+                $scope.changeCount=1;
+                isShowAlt(1);   //弹框
+                save_status(2);
+                $scope.ListData[index].label_true = true;     //单项取反
+                $scope.this_list_index_=true;
+            }else{
+                
+            }
+        };
+        
+        // $(window).bind('touchend',function(){
+        //     // alert('dddd')
+        //     setTimeout(function(){
+        //         for(var key in $scope.ListData){
+        //             if($scope.ListData[key].id==this_index){
+        //                 $scope.currentId = !$scope.ListData[this_index].id;
+        //                 console.log($scope.ListData[this_index])
+        //             }
+        //                 $scope.ListData[key].show_pic = false;
+        //         }
+        //         $scope.$apply();
+        //     },0)
+        // });
+		document.addEventListener("touchmove", function(e){
+			e.preventDefault();
+            setTimeout(function(){
+                for(var key in $scope.ListData){
+                        $scope.currentId = -1//!$scope.ListData[key].id;
+                        $scope.ListData[key].show_pic = false;
+                }
+                $scope.$apply();
+            },0)
+		}, false);
+
+        $scope.changeBg = function (event, index) {
+            this_index=index;
+            event.stopPropagation();
+            setTimeout(function(){
+                for(var key in $scope.ListData){
+                    if($scope.ListData[key].id==$scope.ListData[0].id){
+                        console.log($scope.ListData[index])
+                    }
+                        $scope.currentId = -1;
+                        $scope.ListData[key].show_pic = false;
+                }
+                $scope.$apply();
+            },0)
+            // setTimeout(function(){
+            //     $scope.$apply(function(){
+            //         $scope.currentId = -1;     //选中当前的添加背景色
+            //         for(var key in $scope.ListData){
+            //             $scope.ListData[key].show_pic = false;
+            //         }
+            //     });
+            // },0)
+            // $scope.currentId = -1;     //选中当前的添加背景色
+        };
+
+        //记录输入了值，控制保存按钮的显示和隐藏
+        var isLen=true;
+
+        //新增标签
+        //回车事件绑定
+	$('#label_IO').bind('keyup', function(event) {
+        // 兼容FF和IE和Opera    
+        var theEvent = event || window.event;    
+        var code = theEvent.keyCode || theEvent.which || theEvent.charCode; 
+        if (code == "13" || code == "66") {
+            // alert('输入的文字超出限制')
+			//回车执行查询
+            var name=$('#label_IO').val().trim();
+            var hanzi = name.replace(/[^\u4e00-\u9fa5]/gi,"").length;
+            var len = hanzi*2+(name.length-hanzi);
+                if(len>30){
+                    alert('文字超出限制')
+                }else if(len==0){
+                    alert('请输入标签');
+                }
+            if($scope.isShowSave){
+                save_status(2)
+                // $scope.fish = function (name) {
+                    // alert(len)
+
+                    if (name!='' && name != null && len>0 && len<=30) {
+                        var insertFlag = true;
+                        for(var key in $scope.ListData){
+                            if(name==$scope.ListData[key].name){
+                                alert('已有此标签');
+                                insertFlag = false;
+                                break;
+                            }
+                        }
+                        if(insertFlag){
+                            $scope.ListData.push({'id': $scope.ListData.length+1, 'name': name, 'label_true': true});
+                            $scope.inValue=''
+                            $scope.changeCount=1;
+                            save_status(2)
+                            isLen=false;
+                        }
+                    }else{
+                        if(isLen){
+                            $scope.changeCount=0;
+                            save_status(1)
+                        }else{
+                            save_status(2)
+                        }
+                        // alert('输入的文字超出限制')
+                    }
+                    $scope.$apply();
+                // };
+            }
+		}
+	});
+
+        $scope.this_list_index;
+        $scope.this_list_index_=false;
+        //长按事件
+        $scope.press = function (index,event) {
+            // event.preventDefault();
+            
+            setTimeout(function () {
+                $scope.$apply(function () {
+                    if($scope.this_list_index){
+                        $scope.ListData[$scope.this_list_index].show_pic = false;
+                    }
+                    // $scope.currentId = !$scope.ListData[index].id;
+                    // $scope.ListData[index].show_pic = false;
+                    for (var key in $scope.ListData) {
+                        if ($scope.ListData[key].id == $scope.ListData[index].id) {
+                            $scope.ListData[key].show_pic = true;
+                            $scope.currentId = $scope.ListData[index].id;     //选中当前的添加背景色
+                            $scope.this_list_index=index;
+                            $scope.this_list_index_=true;
+                            $(window).bind('click',removeSelected);
+                        }
+                    }
+                });
+            }, 0);
+        };
+        $(window).unbind('click',removeSelected);
+
+        function removeSelected(e){
+            setTimeout(function(){
+                $scope.$apply(function(){
+                        console.log('ddd')
+                        // 
+                        if($scope.this_list_index_){
+                            e.stopPropagation();
+                            // alert('sdsd-------'+$scope.this_list_index)
+                            $scope.ListData[$scope.this_list_index].show_pic = false;
+                            $scope.currentId = -1;     //选中当前的添加背景色
+                            $(document).unbind();
+                        }
+                });
+            },0);
+        }
+
+        // $(document).bind('touchend',function(e){
+        //     $scope.$apply(function(){
+        //         $scope.this_list_index_=false;
+        //         $(this).unbind('touchstart');
+        //     });
+        // });
+
+    });
+
+    //自定义长按事件
+    app.directive('myTouchpress', [function () {
+        return function (scope, element, attr) {
+            var timeout = undefined;
+            element.on('touchstart', function () {
+                timeout = setTimeout(function () {
+                    scope.$apply(function () {
+                        scope.$eval(attr.myTouchpress);
+                    });
+                }, 500);
+            });
+            element.on('touchend', function () {
+                clearTimeout(timeout);
+            });
+        };
+    }]);
+</script>
+</body>
+
+</html>

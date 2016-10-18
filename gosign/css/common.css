@@ -1,0 +1,66 @@
+*{
+    font-family:'Microsoft YaHei';
+    box-sizing: border-box;
+}
+.top-nbsp{
+    width:100%;
+    height:0.74rem;
+}
+.left{
+    float: left;
+}
+.right{
+    float: right;
+}
+.navigation-top{
+    background: #b73265;
+    color: #fff;
+    width:100%;
+    height:0.74rem;
+    line-height:0.74rem;
+    text-align: center;
+    font-size: 0.32rem;
+    position: relative;
+    font-weight: normal;
+}
+.navigation-top .left,.navigation-top .right{
+    position: absolute;
+    height:100%;
+    color: #fff;
+    padding:0 0.12rem;
+}
+.navigation-top .right{
+    right:0;
+    font-size:0.27rem;
+    line-height:0.74rem;
+    width:0.7rem;
+    display: inline-block;
+    background: url("../images/com_share.png") no-repeat left 10px center;
+    background-size:  auto 22px;
+}
+.navigation-top .left{
+    left: 0;
+    width:1rem;
+    display: inline-block;
+    background: url("../images/com_left.png") no-repeat left 10px center;
+    background-size:  auto 20px;
+    font-size: 0.24rem;
+}
+
+.fixed-top,.fixed-bottom{
+    position: fixed;
+    width:100%;
+    z-index: 10;
+}
+.fixed-top{
+    top:0;
+}
+.fixed-bottom{
+    bottom:0;
+}
+.bottom-btn{
+    padding:0.18rem 0.22rem;
+    width:100%;
+    background: #fff;
+}
+

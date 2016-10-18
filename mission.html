@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html ng-app="labelList">
+
+<head>
+    <meta charset="UTF-8">
+    <title>宣教对象</title>
+
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0,minimal-ui">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+
+    <script src="http://www.angularjsapi.cn/angular-1.3.0.14/angular.js"></script>
+    <script src="http://cdn.bootcss.com/jquery/3.0.0/jquery.min.js"></script>
+    <script src="js/rem.js"></script>
+    <script src="js/map.js"></script>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/list.css">
+    <!--<link rel="stylesheet" href="http://apps.bdimg.com/libs/bootstrap/3.3.0/css/bootstrap.min.css">-->
+    <style>
+        .content li {
+            height: 1.7rem;
+        }
+        
+        #labelContrlList {}
+        
+        .label_all {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+        }
+        
+        .label_all_ked {
+            line-height: 0.7rem;
+        }
+        .content_btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0.8rem;
+            height: 100%;
+            /*background:yellow;*/
+            z-index: 10;
+        }
+    </style>
+</head>
+
+<body ng-controller="labelContrlList">
+    <div>
+        <!--<div class="top-nbsp"></div>
+        <p class="navigation-top fixed-top">
+            <a href="" class="left"></a>
+            已签约患者
+            <a href="" style="background: none;" class="right" ng-click="post_all_patIds()">确定</a>
+        </p>-->
+        <ul class="content" id="labelContrlList">
+            <li ng-repeat="labelValue in label_data_json" ng-click="show_pat_mes($event,$index)">
+                <span class="content_photo_"><img class="content_photo" ng-src={{labelValue.label_src}} onerror="this.src='images/me_default.png'"></span>
+                <span class="content_txt">
+                    <p class="content_title">
+                        <span ng-bind="labelValue.label_title"></span>
+                        <span class="label_checkbox" ng-click="show_tick($event,$index)">
+                            <img ng-src="./images/check_{{labelValue.label_tick}}.png" alt="边框"/>
+                        </span>
+                    </p>
+                    <span class="content_btn" ng-click="show_tick($event,$index)"></span>
+                    <p class="content_address" ng-bind="labelValue.label_address"></p>
+                    <p class="content_list_label">
+                        <span class="content_label" ng-repeat="labelTxt in labelValue.babel_txt" ng-bind="labelTxt"></span>
+                    </p>
+                </span>
+                
+            </li>
+        </ul>
+        <div class="bottom-nbsp">
+            <span class="page_num">
+            <span class="left_arrow left" ng-class="{active:currentPage == 1}"  ng-click="setChange(currentPage=currentPage-1)">&#139</span>
+            <span style="font-size: 0.28rem;color:#9B9B9B;"><b ng-bind="currentPage"></b>/<b ng-bind="pageNumber"></b></span>
+            <span class="right_arrow right" ng-class="{active:currentPage == pageNumber}" ng-click="setChange(currentPage=currentPage+1)">&#155</span>
+            </span>
+            <!--<span class="label_checkboxed" style="opacity:0;">已经选中 <span id="label_checkboxed">{{count}}</span> 位</span>-->
+            <span class="right label_all" ng-show="isSeleckedPat" id="label_value_add" ng-click="label_value_add()">
+                全选
+                <span class="label_checkbox label_all_ked">
+                    <img ng-src="./images/check_false.png"/>
+                </span>
+            </span>
+            <span class="right label_all" ng-hide="isSeleckedPat" id="label_value_add" ng-click="cancel_value_add()">
+                全选
+                <span class="label_checkbox label_all_ked">
+                    <img ng-src="./images/check_true.png"/>
+                </span>
+            </span>
+        </div>
+    </div>
+    <script src="./js/rem.js"></script>
+    <script src="js/get_label_width.js"></script>
+    <script src="js/bridge.js"></script>
+    <script src="js/lazy.js"></script>
+    <script>
+        var and = browser.versions.android;
+        window.onload=function(){
+            var this_title=JSON.stringify({'params':'已签约患者'});
+            $bridge.callMobile("changeTitle",this_title);
+
+            save_status(1)
+            isShowAlt(0)
+            $bridge.callMobile("finishLoad", 'ok');
+        }
+        //右侧确认按钮的显示状态 0不显，1半显 2全显
+        function save_status(status){
+            var save_status=JSON.stringify({'type':status});
+            $bridge.callMobile("rightBtn", save_status);
+        }
+        //是否显示弹框 0不弹框 1弹框
+        function isShowAlt(status){
+            var showalet_status=JSON.stringify({'status':status});
+            $bridge.callMobile("isShowAlt", showalet_status);
+        }
+        //1成功0失败
+        function backIndex(status){
+            // var backIndex_status=JSON.stringify();
+            $bridge.callMobile("back", {'status':status});
+        }
+
+        var data_json=[];   //总数据
+        var data_json_status="";    //保存原数据用户操作的每一页选择的状态,选中的患者
+        var map = new Map();      //创建保存用户操作的数据
+
+
+        var userData=GetUrlValue("userData");
+        var relationType=GetUrlValue("relationType");
+        // alert(relationType)
+        var this_cookie;
+        if(userData){
+            this_cookie='SESSION='+userData;
+        }else{
+            this_cookie=document.cookie;
+        }
+
+
+        //mobile调用我的方法，传值给我id
+        var app=angular.module('labelList',[]);
+        app.controller('labelContrlList',function($scope,$http){
+            
+            $bridge.RegisterFunction("postPatValue");
+            $bridge.RegisterFunction("getUserList");
+
+            //获取默认选择的内容
+
+        // getUserList(tt)
+
+        window.getUserList=function (data){
+            var data_=JSON.stringify(data)//    userList
+            if(and){
+                data_json_status=eval('('+data.userList+')');
+            }else{
+                data_json_status=data.userList||"";
+            }
+            // $scope.$apply();
+        }
+
+            //显示数值
+            $scope.label_data_json=[];
+
+            //全选和取消全选的状态 true显示全选  false取消全选
+            $scope.isSeleckedPat=true;
+
+            //选中的人数
+            $scope.count=0;
+
+            //分页
+            $scope.pageNumber=($scope.label_data_json.length%10)|0; //总页数
+            $scope.currentPage=1;   //初始页
+            $scope.perPage=10;      //每页显示的总行数
+
+
+            setTimeout(function(){get_label_width('.content_list_label');},0);
+
+            //点击切换分页
+            $scope.change = function(page,relationType){
+                // relationType=relationType||101;
+                $scope.currentPage = page;
+
+                //调用ajax取值回来渲染
+                $scope.label_data_json=[];
+
+                $http({
+                    "url":this_get_url+"/doctor/patientListWithTag/",
+                    // "url":"list.json",
+                    "method":"get",
+                    "params":{
+                        "sceneFlag":'1',    //2表示分页，每页100条
+                        "page":page,
+                        "relationType":101,
+                        'userData':this_cookie
+                        // "currentPage":page,
+                        // "perPage":$scope.perPage    //每页显示的条数
+                    }
+                })
+                    .success(function(res){
+                        //总页数
+                        $scope.pageNumber=res.data.pageCount;
+                        var this_page_json=[];
+                        var tempCount=0;    
+                        for(var key in res.data.patientList){
+                            this_page_json.push({
+                                "id":res.data.patientList[key].id,
+                                "label_src":res.data.patientList[key].portrait||'images/me_default.png',
+                                "label_title":res.data.patientList[key].realname,
+                                "label_address":res.data.patientList[key].address,
+                                "babel_txt":res.data.patientList[key].tags||"",
+                                "label_tick":false
+                            });
+                            for(var key_ in data_json_status){
+                                if(res.data.patientList[key].id==data_json_status[key_].ID){
+                                    this_page_json[key].label_tick=true;
+                                    ++tempCount
+                                }
+                            }
+                        }
+                        //用于判断全选之后，再回来，全选的状态
+                        if(tempCount===this_page_json.length){
+                            $scope.isSeleckedPat=false;
+                        }
+
+                        //每页数据的总数，用于判断全选的按钮是否显示
+                        $scope.pageCount=this_page_json.length;
+
+
+                        $scope.label_data_json=this_page_json;
+                        
+                    })
+                    .error(function(res){
+                        console.log(res);
+                    });
+            };
+            
+             //初始化
+            $scope.change(1,relationType);
+
+            //点击上一页下一页
+            $scope.setChange = function(page){
+                $scope.isSeleckedPat=true;
+                $scope.count=0;
+                if(page <= 0){
+                    $scope.currentPage = page + 1;  // 左边没有数据
+                }else if(page > $scope.pageNumber){
+                    $scope.currentPage = page - 1;  //右边没有
+                }else{
+                    $scope.change(page,relationType);    //中间
+                }
+                data_json_status=map.values();
+            };
+
+            //选中事件，显示箭头
+            $scope.show_tick = function(event,index) {
+                event.stopPropagation();
+                isShowAlt(1)
+                save_status(2)
+
+                
+                $scope.label_data_json[index].label_tick=!$scope.label_data_json[index].label_tick;
+                if($scope.label_data_json[index].label_tick) {
+                    ++$scope.count;
+                    map.set($scope.label_data_json[index].id,{
+                        'ID':$scope.label_data_json[index].id,
+                        'realname':$scope.label_data_json[index].label_title,
+                        'portrait':$scope.label_data_json[index].label_src
+                    })
+                } else {
+                    $scope.count<=0?0:--$scope.count;
+                    map.remove($scope.label_data_json[index].id)
+                }
+                if(($scope.count)==$scope.pageCount){
+                    $scope.isSeleckedPat=false;
+                }
+                if($scope.count<$scope.pageCount){
+                    $scope.isSeleckedPat=true;
+                }
+            };
+
+            //查看医生具体的信息
+            $scope.show_pat_mes=function(event,index){
+                event.stopPropagation();
+                // alert($scope.label_data_json[index].id)
+                var patid=JSON.stringify({'id':$scope.label_data_json[index].id,'relationType':101})
+                $bridge.callMobile("openUserDetial", patid);
+            }
+            //全选
+            $scope.label_value_add=function(){
+
+                $scope.isSeleckedPat=false;
+                $scope.count=$scope.pageCount;
+                isShowAlt(1)
+                save_status(2)
+
+                for(var key in $scope.label_data_json){
+
+                    $scope.label_data_json[key].label_tick=true;
+                    map.set($scope.label_data_json[key].id,{
+                        'ID':$scope.label_data_json[key].id,
+                        'realname':$scope.label_data_json[key].label_title,
+                        'portrait':$scope.label_data_json[key].label_src
+                    })
+                }
+                console.log(data_json_status)
+
+            }
+            //取消全选
+            $scope.cancel_value_add=function(){
+                $scope.count=0;
+                isShowAlt(1)
+                save_status(2)
+
+                $scope.isSeleckedPat=true;
+
+                for(var key in $scope.label_data_json){
+                    $scope.label_data_json[key].label_tick=false;
+
+                    map.remove($scope.label_data_json[key].id)
+
+                }
+            }
+
+            //确认提交数据
+            window.postPatValue=function(){
+                var temp=map.values();
+                var userList_data=JSON.stringify({'userList':temp});
+                //传值
+                $bridge.callMobile("getUserValue", userList_data);
+            }
+
+            //
+            //确认提交数据
+            $scope.post_all_patIds=function(){
+                var temp=map.values();
+                console.log({'userList':temp})
+                console.log(map.keys())
+                // alert(map.size())
+            }
+        });
+
+
+</script>
+</body>
+
+</html>

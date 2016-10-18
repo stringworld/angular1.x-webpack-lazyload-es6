@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="labelList">
+
+<head>
+    <meta charset="UTF-8">
+    <title>标签分组--已签约</title>
+
+
+
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0,minimal-ui">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+
+    <script src="js/rem.js"></script>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/list.css">
+</head>
+
+<body style="background-color: #F5F5F5;" ng-controller="labelContrlList">
+    <!--<div class="top-nbsp"></div>
+    <h1 class="navigation-top fixed-top">
+        <a href="" onclick="history.go(-1)" class="left"></a>
+        已签约
+    </h1>-->
+    <div>
+        <ul class="label_groups">
+            <li ng-click="groups_select_label()">
+                <!--/<img class="label_add_ico" src="images/add.png" alt="" align="absmiddle"-->
+                <span>批量添加标签</span>
+            </li>
+            <li ng-click="show_label_mes($index)" ng-repeat="item in label_data_json" ng-if="item.count>0">
+                <span ng-bind="item.tagName"></span> (
+                <span class="label_number" ng-bind="item.count"></span>)
+                <span class="right-arrow"></span>
+            </li>
+        </ul>
+    </div>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="http://apps.bdimg.com/libs/angular.js/1.4.6/angular.min.js"></script>
+    <script src="js/get_label_width.js"></script>
+    <script src="js/bridge.js"></script>
+    <script>
+        var userData=GetUrlValue("userData");
+        var relationType=GetUrlValue("relationType");
+        // var relationType=101;
+        var this_cookie;
+        var this_title;
+        if(userData){
+            this_cookie='SESSION='+userData;
+        }else{
+            this_cookie=document.cookie;
+        }
+        // alert(userData)
+
+        //传递标题
+        window.onload=function(){
+            this_title=relationType==101?'已签约':'已关注';
+            var link_=JSON.stringify({'params':this_title});
+            $bridge.callMobile("changeTitle", link_)
+        }
+
+        //显示保存状态--ios
+        save_status(0)
+        function save_status(status){
+            var save_status=JSON.stringify({'type':status});
+            $bridge.callMobile("rightBtn", save_status);
+        }
+        isShowAlt(0)
+        function isShowAlt(status){
+            //0不弹框 1弹框
+            var showalet_status=JSON.stringify({'status':status});
+            $bridge.callMobile("isShowAlt", showalet_status);
+        }
+
+        var label_data_json;
+        get_label(relationType)
+        function get_label(relationType){
+            $.ajax({
+                type:'get',
+                url:this_get_url+'/doctor/doctorTagListWithCount/',
+                data:{
+                    'relationType':relationType,
+                    'userData':this_cookie
+                }, 
+                async: false,
+                success:function(voucher_json,status){
+                    if(voucher_json.isSuccess){
+                        label_data_json=voucher_json;
+                    }
+                        console.log(voucher_json)
+                }
+            });
+        }
+        var app=angular.module('labelList',[]);
+        app.controller('labelContrlList',['$http', '$location', '$scope', function($http, $location, $scope){
+
+            $scope.label_data_json=label_data_json.data.tagList;
+
+            
+
+            //点击跳转选择患者页面
+            $scope.groups_select_label=function(){
+                if(userData==null){
+                    userData=""
+                }
+                location.href='groups_select_label.html?userData='+userData+'&relationType='+relationType;
+            }
+
+            //显示标签下具体的患者信息
+            $scope.show_label_mes=function(index){
+                // alert(userData+'-----------show_label_mes------------'+relationType)
+
+                var labelTitle=$scope.label_data_json[index].tagName;
+                var labelCount=$scope.label_data_json[index].count;
+
+                var and = browser.versions.android;
+                var ios = browser.versions.ios;
+
+                if(userData==null){
+                    userData=""
+                }
+                location.href='lableControl.html?userData='+userData+'&labelTitle='+labelTitle+'&relationType='+relationType;     //中文编码
+            }
+        }]);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,76 @@
+*{margin:0;padding:0;}
+#wrapper {
+    width: 100%;
+    height: 100%;
+    overflow-y:scroll;
+    overflow-x:hidden;
+}
+#scroller {
+    width: 100%;
+    min-height: 100%;
+    font-size: 0;
+}
+#scroller img,.goSigned img {
+    width: 100%;
+    -webkit-user-select:none;
+    display: block;
+}
+.goSigned{
+    width:100%;
+    position: fixed;
+    bottom: 0%;
+    display: block;
+    /*padding-bottom: 5%;*/
+}
+.goSingnedBnt{
+    margin: 0 auto;
+    background-color: #D14479;
+    color: #fff;
+    width: 100%;
+    height: 0.7rem;
+    line-height: 0.7rem;
+    text-align: center;
+    font-size: 0.32rem;
+    position: relative;
+    font-weight: normal;
+    /*border-radius: 2px;
+}
+
+#doc_title{
+    display: none;
+}
+#pad_px{
+    /*margin-bottom:0.7rem;*/
+}
+
+/*
+    分享图片
+*/
+.share_ico{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(0,0,0,.8);
+    z-index: 30;
+    display: none;
+}
+.share_ico img{
+    position: absolute;
+    width: 80%;
+    left: 17%;
+    top: 0%;
+}
+
+
+.top_in {
+    -webkit-animation: top_in 1s;
+    -webkit-animation-fill-mode: forwards;
+    -webkit-transition: 1s;
+}
+
+@-webkit-keyframes top_in {
+    0% {-webkit-transform: translateY(100px);}
+    100% {-webkit-transform: translateY(0);}
+}

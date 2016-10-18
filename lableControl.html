@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="labelList">
+
+<head>
+    <meta charset="UTF-8">
+    <title>已签约</title>
+
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0,minimal-ui">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+
+    <script src="js/rem.js"></script>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/list.css">
+    <style>
+        .content li {
+            height: 1.7rem;
+        }
+    </style>
+</head>
+
+<body style="background-color: #FFFFFF;" ng-controller="labelContrlList">
+    <!--<div class="top-nbsp"></div>
+    <h1 class="navigation-top fixed-top">
+        <a href="" onclick="history.go(-1)" class="left"></a>
+        已签约-->
+    <!--<a href="" class="right" style="display:block;" id="label_value_save" ng-class="{label_change_save:changeCount==1}" ng-click="label_value_save(inValue)">保存</a>-->
+    <!--</h1>-->
+    <div>
+        <h2 class="label_title">标签名称</h2>
+        <form>
+            <div class="labelInput">
+                <input type="text" value="" id="label_title" ng-model="inValue" ng-change="myChange(inValue)">
+            </div>
+        </form>
+        <h2 class="label_title">标签成员(<span ng-bind="label_number"></span>)</h2>
+        <ul class="content" id="labelContrlList">
+            <li ng-init="labelValue = label_data_json_value" ng-repeat="label_data_json_value in label_data_json">
+                <span class="content_photo_"><img class="content_photo" ng-src={{labelValue.label_src}} onerror="this.src='images/me_default.png'"></span>
+                <span class="content_txt">
+                    <p class="content_title" ng-bind="labelValue.label_title"></p>
+                    <p class="content_address" ng-bind="labelValue.label_address"></p>
+                    <p class="content_list_label">
+                        <span class="content_label" ng-repeat="labelTxt in labelValue.bable_txt" ng-bind="labelTxt"></span>
+                    </p>
+                </span>
+            </li>
+        </ul>
+        <!--保存提示-->
+        <div class="hint_mes hint_hide">
+            <div class="hint_content">
+                <h1 class="hint_title">保持本次编辑?</h1>
+                <div class="hint_status">
+                    <span class="hint_cancel" ng-click="hint_cancel()">取消</span>
+                    <span class="hint_sure" ng-click="hint_sure(inValue)">确定</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="http://apps.bdimg.com/libs/angular.js/1.4.6/angular.min.js"></script>
+    <script src="js/get_label_width.js"></script>
+    <script src="js/bridge.js"></script>
+    <script>
+        
+        var userData=GetUrlValue("userData");
+        var relationType=GetUrlValue("relationType");
+        // var relationType=101;
+        var this_cookie;
+        if(userData){
+            this_cookie='SESSION='+userData;
+        }else{
+            this_cookie=document.cookie;
+        }
+        var json=[];
+        save_status(1)
+
+
+
+        $bridge.RegisterFunction("label_value_save");
+
+        function save_status(status){
+            var save_status=JSON.stringify({'type':status});
+            $bridge.callMobile("rightBtn", save_status);
+        }
+
+        function isShowAlt(status){
+            //0不弹框 1弹框
+            var showalet_status=JSON.stringify({'status':status});
+            $bridge.callMobile("isShowAlt", showalet_status);
+        }
+        function backIndex(status){
+            //1成功0失败
+            var backIndex_status=JSON.stringify({'success':status});
+            $bridge.callMobile("back", backIndex_status);
+        }
+
+        function webViewBack(status){
+            //1成功0失败
+            var backIndex_status=JSON.stringify({'success':status});
+            $bridge.callMobile("webViewBack", backIndex_status);
+        }
+
+        var app=angular.module('labelList',[]);
+        app.controller('labelContrlList',['$http', '$location', '$scope', function($http, $location, $scope){
+            $bridge.RegisterFunction("ifgoback");
+            var and = browser.versions.android;
+            var ios = browser.versions.ios;
+            //是否显示保存按钮
+            $scope.isShowSave=true;
+
+            //回车事件绑定
+            $('#label_title').bind('keyup', function(event) {
+                // 兼容FF和IE和Opera    
+                var theEvent = event || window.event;    
+                var code = theEvent.keyCode || theEvent.which || theEvent.charCode;
+                if (code == "13" || code == "66") {
+                    var name=$('#label_title').val().trim();
+                    var hanzi = name.replace(/[^\u4e00-\u9fa5]/gi,"").length;
+                    var len = hanzi*2+(name.length-hanzi);
+                    if(len>30){
+                        alert('文字超出限制')
+                    }else if(len==0){
+                        alert('请输入标签')
+                    }
+                    //回车执行查询
+                    if($scope.isShowSave){
+                        save_status(2)
+                    }
+                }
+            });
+
+            //input change ios
+            $scope.myChange=function(control){
+                var hanzi = control.replace(/[^\u4e00-\u9fa5]/gi,"").length;
+                var len = hanzi*2+(control.length-hanzi);
+                if(control==''||$scope.labelTitle==control||len>=30){
+                    save_status(1);
+                    isShowAlt(0);   //不弹框
+                    $scope.isShowSave=false;
+                }else{
+                    save_status(2)
+                    isShowAlt(1);   //弹框
+                    $scope.isShowSave=true;
+                }
+            }
+
+            //保存数据
+            window.label_value_save=function(newTag){
+                
+                var label_=$('#label_title').val();
+                $.ajax({
+                    type:'post',
+                    url:this_get_url+'/doctor/modifyTag/',
+                    data:{
+                        'relationType':relationType,
+                        'newTag':label_,
+                        'oldTag':$scope.labelTitle,
+                        'userData':this_cookie
+                    }, 
+                    async:false,
+                    success:function(voucher_json,status){
+                        if(voucher_json.isSuccess){
+                            $scope.inValue=label_;
+                            get_pat(label_);
+                            // alert('添加标签成功');
+                            if(and){
+                                webViewBack(1)
+                            }
+                            if(ios){
+                                window.history.go(-1);
+                            }
+                        }else{
+                            alert('已经存在一个相同的标签');
+                        }
+                            console.log(voucher_json)
+                        // $('.hint_mes').addClass('hint_hide');
+                    }
+                });
+            }
+
+            
+            function get_pat(labelTitle){
+                $.ajax({
+                    type:'get',
+                    url:this_get_url+'/doctor/patientListBeloneTag/',
+                    data:{
+                        'relationType':relationType,
+                        'tag':labelTitle,
+                        'userData':this_cookie
+                    }, 
+                    async: false,
+                    success:function(data_json,status){
+                        var json=[];
+                        if(data_json.isSuccess){
+                            for(var key in data_json.data.patientList){
+                                json.push({
+                                    'id':data_json.data.patientList[key].id,
+                                    'label_src':data_json.data.patientList[key].portrait||'images/me_default.png',
+                                    'label_title':data_json.data.patientList[key].realname,
+                                    'label_address':data_json.data.patientList[key].address,
+                                    'bable_txt':data_json.data.patientList[key].tags
+                                });
+                            }
+                        }
+                        setTimeout(function(){
+                            $scope.label_data_json=json;
+                            $scope.$apply();
+                        },0)
+                            console.log(data_json)
+                    }
+                });
+            }
+
+            setTimeout(function(){
+                get_label_width('.content_list_label');
+                var labelCount=GetUrlValue("labelTitle");
+
+                // $('#label_number').text(labelCount);
+
+                get_label();
+                function get_label(){
+                    $.ajax({
+                        type:'get',
+                        url:this_get_url+'/doctor/doctorTagListWithCount/',
+                        data:{
+                            'relationType':relationType,
+                            'userData':this_cookie
+                        }, 
+                        async: false,
+                        success:function(voucher_json,status){
+                            if(voucher_json.isSuccess){
+                                for(var key in voucher_json.data.tagList){
+                                    if(voucher_json.data.tagList[key].tagName==labelCount){
+                                        $scope.inValue=voucher_json.data.tagList[key].tagName;
+                                        $scope.label_number=voucher_json.data.tagList[key].count;
+                                        $scope.labelTitle=voucher_json.data.tagList[key].tagName;
+                                        get_pat(voucher_json.data.tagList[key].tagName);
+                                    }
+                                }
+
+                            }
+                            console.log(voucher_json)
+                        }
+                    });
+                }
+                $scope.$apply();
+            },0);  
+        }])
+        
+
+    </script>
+</body>
+
+</html>

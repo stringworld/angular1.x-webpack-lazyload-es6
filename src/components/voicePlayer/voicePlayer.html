@@ -1,0 +1,58 @@
+<div class="block-box">
+
+    <style>
+         .block-box{
+             padding-top:15px;
+             padding-bottom:15px;
+         }
+        .block-box .content .list li {
+            padding-left: 15px;
+            font-size: 0.3rem;
+            color: #999999;
+            overflow: hidden;
+        }
+        
+        .voice p {
+            background: #ffffff;
+            border:1px solid #d43e72;
+            border-radius: 5px;
+            text-align: center;
+            vertical-align: middle;
+            width: 1.1rem;
+            height: 1.1rem;
+            box-sizing: border-box;
+            padding: 0.15rem 0.2rem 0;
+            float: left;
+            margin: 0  0.3rem 0.2rem 0;
+            color: #888;
+        }
+         .voice p  span {
+             color: #888;
+             display: block;
+         }
+         .voice p.on{
+            background: #d43e72;
+        }
+         .voice p.on span{
+             color: #fff;
+
+         }
+        .voice p img {
+            width: 0.45rem;
+            margin-bottom: 0.1rem;
+        }
+    </style>
+    <div class="content">
+        <ul class="list">
+            <li class="voice">
+                <p class="voice-list" ng-class="{true: 'on', false: ''}[item.play]" ng-repeat="item in voicelist track by $index" ng-click="voice_play($index)" ng-init="addEvent($last)">
+                    <img ng-hide="item.play" src="./img/voice.png">
+                    <img ng-show="item.play" src="./img/voice-play.gif">
+                   <span>{{item.time}}</span>
+                    <audio preload="load" ng-show="0" ng-src="{{item.url}}"></audio>
+                </p>
+
+            </li>
+        </ul>
+    </div>
+</div>

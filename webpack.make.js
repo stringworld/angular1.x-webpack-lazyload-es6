@@ -2,10 +2,11 @@
 
 // Modules
 var webpack = require('webpack');
-var autoprefixer = require('autoprefixer-core');
+var autoprefixer = require('autoprefixer');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var colors = require("colors")
+var colors = require("colors");
+var precss = require('precss');
 
 
 module.exports = function makeWebpackConfig(options) {
@@ -150,12 +151,12 @@ module.exports = function makeWebpackConfig(options) {
     //
     // Reference: https://github.com/webpack/style-loader
     // Use style-loader in development for hot-loading
-    loader: ExtractTextPlugin.extract('style', 'css?sourceMap!postcss')
+    loader: ExtractTextPlugin.extract('style', 'css!postcss?sourceMap')
   }
   var lessLoader = {
     test: /\.less$/,
     //less loader
-    loader: "style!css!less?strictMath&noIeCompat"
+    loader: "style!css!postcss!less?strictMath"
   }
 
   // Skip loading css in test mode
@@ -174,9 +175,8 @@ module.exports = function makeWebpackConfig(options) {
    * Add vendor prefixes to your css
    */
   config.postcss = [
-    autoprefixer({
-      browsers: ['last 2 version']
-    })
+    precss,
+    autoprefixer
   ];
 
   /**
@@ -247,6 +247,5 @@ module.exports = function makeWebpackConfig(options) {
       inline: true
     }
   };
-
   return config;
 };

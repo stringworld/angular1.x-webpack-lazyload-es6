@@ -1,4 +1,4 @@
-This is a demo for hybrid
+This is a demo for browser lazyload
 
 npm run server  进入开发模式
 

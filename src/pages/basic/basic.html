@@ -1,0 +1,94 @@
+<div ng-controller="basic">
+    <div class="content" ng-if="isHideBasic">
+        <div class="content-block-title">请填写真实信息，获取优质服务</div>
+        <div class="list-block">
+            <ul>
+                <li class="item-content">
+                    <div class="item-inner">
+                        <div class="item-title label pull-text-left">姓名</div>
+                        <div class="item-input">
+                            <input class="pull-text-right" type="text" placeholder="请输入">
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <pic-Ker mydata='mydata' classdom="'picker'" itemlabel="'我是'" itemvalue="'我是'"></pic-Ker>
+                </li>
+                <li ng-click="showHos()">
+                    <div class="item-content item-link">
+                        <div class="item-inner">
+                            <div class="item-title label pull-text-left">医院</div>
+                            <div class="item-after pull-text-right">医院</div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="item-content item-link">
+                        <div class="item-inner">
+                            <div class="item-title label pull-text-left">科室</div>
+                            <div class="item-after">科室</div>
+                        </div>
+                    </div>
+                </li>
+                <li ng-click="registerDict($event)">
+                    <div class="item-content item-link">
+                        <div class="item-inner">
+                            <div class="item-title label pull-text-left">擅长</div>
+                            <div class="item-after">擅长</div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="item-content item-link">
+                        <div class="item-inner">
+                            <div class="item-title label pull-text-left">毕业院校</div>
+                            <div class="item-after">毕业院校</div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="content-block-title show-toast">点击测试显示toast</div>
+    </div>
+
+
+    <div ng-controller="basicHos" ng-if="isShowHos">
+        <div class="content">
+            <div class="content-block-title" ng-click="isHideHos()">医院</div>
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content item-link">
+                            <div class="item-inner">
+                                <div class="item-title label pull-text-left">医院地区</div>
+                                <div class="item-after" id="city-picker">医院地区</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <pic-Ker mydata='registerDictDataT' classdom="'citpicker'" itemlabel="'医院属性'" itemvalue="'医院属性'"></pic-Ker>
+                        <!--<div class="item-content item-link">
+                            <div class="item-inner">
+                                <div class="item-title label pull-text-left">医院属性</div>
+                                <div class="item-after">医院属性</div>
+                            </div>
+                        </div>-->
+                    </li>
+                    <li>
+                        <!--<pic-Ker mydata='registerDictData' classdom="'citpicker'" itemlabel="'医院名称'" itemvalue="'医院名称'"></pic-Ker>-->
+                        <div class="item-content item-link">
+                            <div class="item-inner">
+                                <div class="item-title label pull-text-left">医院名称</div>
+                                <div class="item-after">医院名称</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <!--<pic-Ker mydata='registerDictData' classdom="'citpicker'" itemlabel="'医院地区'" itemvalue="'医院地区'"></pic-Ker>-->
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!--<pic-Ker classdom="'#picker'"></pic-Ker>-->
+    </div>
+</div>

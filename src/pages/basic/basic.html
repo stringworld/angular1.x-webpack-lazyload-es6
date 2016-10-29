@@ -23,10 +23,11 @@
                     </div>
                 </li>
                 <li>
+                    <!--<pic-Ker mydata='hosdepartment' classdom="'hos-department'" itemlabel="'科室'" itemvalue="'科室'"></pic-Ker>-->
                     <div class="item-content item-link">
                         <div class="item-inner">
                             <div class="item-title label pull-text-left">科室</div>
-                            <div class="item-after">科室</div>
+                            <div class="item-after" id="hos-department">科室</div>
                         </div>
                     </div>
                 </li>
@@ -39,18 +40,60 @@
                     </div>
                 </li>
                 <li>
-                    <div class="item-content item-link">
+                    <pic-Ker mydata='schooldata' classdom="'byschool'" itemlabel="'毕业院校'" itemvalue="'毕业院校'"></pic-Ker>
+                    <!--<div class="item-content item-link">
                         <div class="item-inner">
                             <div class="item-title label pull-text-left">毕业院校</div>
                             <div class="item-after">毕业院校</div>
                         </div>
+                    </div>-->
+                </li>
+                <li>
+                    <div class="item-content item-link">
+                        <div class="item-inner">
+                            <div class="item-title label pull-text-left">院校地区</div>
+                            <div class="item-after" id="city-picker">院校地区</div>
+                        </div>
                     </div>
+                </li>
+                <li>
+                    <div class="item-content item-link">
+                        <div class="item-inner">
+                            <div class="item-title label pull-text-left">院校名称</div>
+                            <div class="item-after" id="city-picker">院校名称</div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="item-content item-link">
+                        <div class="item-inner">
+                            <div class="item-title label pull-text-left">医院地区</div>
+                            <div class="item-after" id="city-picker" ng-click="openHos()">医院地区</div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <pic-Ker mydata='hospro' classdom="'citpicker'" itemlabel="'医院属性'" itemvalue="'医院属性'"></pic-Ker>
+                    <!--<div class="item-content item-link">
+                            <div class="item-inner">
+                                <div class="item-title label pull-text-left">医院属性</div>
+                                <div class="item-after">医院属性</div>
+                            </div>
+                        </div>-->
+                </li>
+                <li>
+                    <pic-Ker mydata='hosname' classdom="'hos-name-picker'" itemlabel="'医院名称'" itemvalue="'医院名称'"></pic-Ker>
+                    <!--<div class="item-content item-link">
+                        <div class="item-inner">
+                            <div class="item-title label pull-text-left">医院名称</div>
+                            <div class="item-after">医院名称</div>
+                        </div>
+                    </div>-->
                 </li>
             </ul>
         </div>
         <div class="content-block-title show-toast">点击测试显示toast</div>
     </div>
-
 
     <div ng-controller="basicHos" ng-if="isShowHos">
         <div class="content">
@@ -61,12 +104,12 @@
                         <div class="item-content item-link">
                             <div class="item-inner">
                                 <div class="item-title label pull-text-left">医院地区</div>
-                                <div class="item-after" id="city-picker">医院地区</div>
+                                <div class="item-after" id="city-picker" ng-click="openHos()">医院地区</div>
                             </div>
                         </div>
                     </li>
                     <li>
-                        <pic-Ker mydata='registerDictDataT' classdom="'citpicker'" itemlabel="'医院属性'" itemvalue="'医院属性'"></pic-Ker>
+                        <pic-Ker mydata='hospro' classdom="'citpicker'" itemlabel="'医院属性'" itemvalue="'医院属性'"></pic-Ker>
                         <!--<div class="item-content item-link">
                             <div class="item-inner">
                                 <div class="item-title label pull-text-left">医院属性</div>

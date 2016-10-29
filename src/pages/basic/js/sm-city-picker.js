@@ -89,7 +89,7 @@
                 }, 200);
                 return;
             }
-            // Zepto(this).getCode({ values });
+            Zepto(this).getCode({ values });
         },
         cols: [{
                 textAlign: 'center',

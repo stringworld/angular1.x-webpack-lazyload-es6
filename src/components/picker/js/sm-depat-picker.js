@@ -9,11 +9,14 @@
 
     Zepto.ajax({
         type: 'get',
-        url: 'http://192.168.10.213:8082/doctor/getRegisterDict/',
-        data: { doctorTypeId: 2 },
+        url: 'http://192.168.10.213:8082/doctor/getHospitalDepartment/',
+        data: { doctorTypeId: 2, hospitalId: 1050 },
         async: false,
         success: function({ data }) {
-            Zepto.smConfig.rawCitiesData = data.provinceListWithCity;
+            console.log(data)
+            if (data.departmentType) {
+                Zepto.smConfig.rawCitiesData = data.departmentList;
+            }
         }
     })
 
@@ -29,14 +32,14 @@
         return [""];
     };
 
-    var cityList = function(data) {
-        if (!data.cityList) return [""];
-        return format(data.cityList);
+    var subDepartmentList = function(data) {
+        if (!data.subDepartmentList) return [""];
+        return format(data.subDepartmentList);
     };
 
     var getCities = function(d) {
         for (var i = 0; i < raw.length; i++) {
-            if (raw[i].name === d) return cityList(raw[i]);
+            if (raw[i].name === d) return subDepartmentList(raw[i]);
         }
         return [""];
     };
@@ -44,9 +47,9 @@
     var getDistricts = function(p, c) {
         for (var i = 0; i < raw.length; i++) {
             if (raw[i].name === p) {
-                for (var j = 0; j < raw[i].cityList.length; j++) {
-                    if (raw[i].cityList[j].name === c) {
-                        return cityList(raw[i].cityList[j]);
+                for (var j = 0; j < raw[i].subDepartmentList.length; j++) {
+                    if (raw[i].subDepartmentList[j].name === c) {
+                        return subDepartmentList(raw[i].subDepartmentList[j]);
                     }
                 }
             }
@@ -58,7 +61,7 @@
     var provinces = raw.map(function(d) {
         return d.name;
     });
-    var initCities = cityList(raw[0]);
+    var initCities = subDepartmentList(raw[0]);
     var initDistricts = [""];
 
     var currentProvince = provinces[0];
@@ -68,7 +71,7 @@
     var t;
     var defaults = {
 
-        cssClass: "city-picker",
+        cssClass: "hos-department",
         rotateEffect: false, //为了性能
 
         onChange: function(picker, values, displayValues) {
@@ -104,7 +107,7 @@
         ]
     };
 
-    Zepto.fn.cityPicker = function(params) {
+    Zepto.fn.departPicker = function(params) {
         return this.each(function() {
             if (!this) return;
             var p = Zepto.extend(defaults, params);
@@ -130,7 +133,7 @@
     //     var mm = raw.filter(function(index) {
     //         return index.name === values[0];
     //     }).map(function(d) {
-    //         var aa = d.cityList.filter(function(index) {
+    //         var aa = d.subDepartmentList.filter(function(index) {
     //             return index.name === values[1];
     //         }).map(function(d) {
     //             return d.id;

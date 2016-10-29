@@ -363,16 +363,6 @@ input:-ms-input-placeholder {
     white-space: nowrap;
 }
 
-.city-picker .col-province,
-.hos-department .col-province {
-    width: 5rem;
-}
-
-.city-picker .col-city,
-.hos-department .col-city {
-    width: 6rem;
-}
-
 @media only screen and (-webkit-min-device-pixel-ratio: 2) {
     .picker-modal .bar:before {
         -webkit-transform: scaleY(.5);

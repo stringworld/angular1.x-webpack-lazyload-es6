@@ -1,8 +1,14 @@
 import angular from 'angular';
-export default angular.module('basic.service', [])
+export default angular.module('basics.service', [])
     .service('getDataAPI', ['$http', '$q', '$rootScope', function($http, $q, $rootScope) {
         var tempIp = 'http://192.168.10.213:8082';
         return {
+            doctorTypeId: '',
+            departmentId: '',
+            hospitalId: '',
+            realname: '',
+            schoolId: '',
+            specialtyList: '',
             getDoctorInfo: function({ userData }) {
                 var config = { params: { userData } };
                 return $http.get(tempIp + '/doctor/doctorInfo/', config).then(({ data }) => { return data || {} });

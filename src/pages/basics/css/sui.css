@@ -215,7 +215,7 @@
 
 .list-block .item-after {
     text-align: right;
-    width: 63%;
+    /*width: 63%;*/
     white-space: nowrap;
     color: #5f646e;
     max-height: 1.4rem;

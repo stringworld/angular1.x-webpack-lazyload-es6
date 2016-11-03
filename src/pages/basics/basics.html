@@ -1,4 +1,4 @@
-<div ng-controller="basic">
+<div ng-controller="basics">
     <div class="hide-content hide-item-1"></div>
     <div class="hide-content hide-item-2"></div>
     <div class="hide-content hide-item-3"></div>
@@ -10,7 +10,7 @@
                     <div class="item-inner">
                         <div class="item-title label pull-text-left">姓名</div>
                         <div class="item-input">
-                            <input class="pull-text-right" type="text" ng-change="changeName(doctorInFo.realname)" ng-model="doctorInFo.realname" placeholder="请输入">
+                            <input class="pull-text-right" type="text" ng-change="changeName(doctorInFo.realname)" ng-model="dataPool.doctorInfoList.doctor[0].realname" placeholder="请输入">
                         </div>
                     </div>
                 </li>
@@ -18,7 +18,7 @@
                     <div class="item-content item-link">
                         <div class="item-inner">
                             <div class="item-title label pull-text-left">我是</div>
-                            <div class="item-after" id="my-identity" ng-bind="doctorInFo.doctorType">我是</div>
+                            <div class="item-after" id="my-identity" ng-bind="dataPool.doctorInfoList.doctor[0].doctorType">我是</div>
                         </div>
                     </div>
                 </li>
@@ -26,7 +26,7 @@
                     <div class="item-content item-link">
                         <div class="item-inner">
                             <div class="item-title label pull-text-left"><a href="">医院</a></div>
-                            <div class="item-after" ng-bind="doctorInFo.hospitalName">医院</div>
+                            <div class="item-after" ng-bind="dataPool.doctorInfoList.doctor[0].hospitalName">医院</div>
                         </div>
                     </div>
                 </li>
@@ -34,7 +34,7 @@
                     <div class="item-content item-link">
                         <div class="item-inner">
                             <div class="item-title label pull-text-left">科室</div>
-                            <div class="item-after" id="hos-department" ng-bind="doctorInFo.department">科室</div>
+                            <div class="item-after" id="hos-department" ng-bind="dataPool.doctorInfoList.doctor[0].department.name">科室</div>
                         </div>
                     </div>
                 </li>
@@ -42,7 +42,7 @@
                     <div class="item-content item-link">
                         <div class="item-inner">
                             <div class="item-title label pull-text-left">擅长</div>
-                            <div class="item-after" ng-bind="doctorInFo.specialty">擅长</div>
+                            <div class="item-after" ng-bind="item.name" ng-repeat="item in dataPool.doctorInfoList.doctor[0].specialty">擅长</div>
                         </div>
                     </div>
                 </li>
@@ -50,10 +50,21 @@
                     <div class="item-content item-link">
                         <div class="item-inner">
                             <div class="item-title label pull-text-left"><a href="">毕业院校</a></div>
-                            <div class="item-after" ng-bind="doctorInFo.schoolName">毕业院校</div>
+                            <div class="item-after" ng-bind="dataPool.doctorInfoList.doctor[0].schoolName">毕业院校</div>
                         </div>
                     </div>
                 </li>
+                <li ng-click="postData()">
+                    <div class="item-content item-link">
+                        <div class="item-inner">
+                            <div class="item-title label pull-text-left">调用组件</div>
+                            <div class="item-after">
+                                <pic-Ker showdata='dataPool.selectData' getchangedata="getchange(id,name)" closepicker="closePicker()"></pic-Ker>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
             </ul>
         </div>
         <div class="button-block" ng-click="saveRegisterInfo()">
